@@ -1,4 +1,25 @@
-# Trust Giveaway
+<br />
+<div align="center">
+  <a href="https://github.com/RegisGraptin/TrustGiveaway">
+    <img src="./logo.jpeg" alt="Logo" width="250" height="250">
+  </a>
+
+<h3 align="center">Trust Giveaway</h3>
+<p align="center" style="font-style: italic; font-size: 1.2em;">Built during ETHGlobal Prague</a></p>
+  <p align="center">
+    Enable fair and transparent Twitter contests powered by blockchain.
+    <br />
+    <br />
+    <a href="https://github.com/RegisGraptin/TrustGiveaway">Code</a>
+    &middot;
+    <a href="#">View Demo</a>
+    &middot;
+    <a href="#">Video Presentation</a>
+    
+  </p>
+</div>
+
+#
 
 Twitter contests are a great marketing tool. They create engagement and promote content while rewarding participants. However, **trust is often an issue**. Winners can be chosen arbitrarily, raising doubts about fairness. In some cases, the prize may never be distributed at all, further damaging trust.
 
