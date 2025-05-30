@@ -6,7 +6,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-5">
       <Header />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <Contest />
       </main>
     </div>
