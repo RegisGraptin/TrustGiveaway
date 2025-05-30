@@ -20,3 +20,4 @@ npx hardhat run scripts/deploy.ts --network optimismSepolia
 ```
 
 FIXME: Add commands to verify smart contract
+FIXME: Add blockscout link direclty!
