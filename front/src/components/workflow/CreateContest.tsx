@@ -161,7 +161,12 @@ export default function CreateContest() {
             <div className="pt-2">
               <button
                 onClick={handleCreateContest}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-4 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-lg hover:scale-105"
+                className={`w-full py-4 px-4 rounded-lg font-bold text-lg text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  !newContest.tweetId
+                    ? "bg-gray-400 cursor-not-allowed shadow-none hover:from-blue-600 hover:to-indigo-700 hover:shadow-none scale-100"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-md hover:shadow-lg hover:scale-105 focus:ring-blue-500"
+                }`}
+                disabled={!newContest.tweetId}
               >
                 Create Contest
               </button>
@@ -182,7 +187,12 @@ export default function CreateContest() {
             <div className="pt-2">
               <button
                 onClick={handleCreateTweet}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-4 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-lg hover:scale-105"
+                className={`w-full py-4 px-4 rounded-lg font-bold text-lg text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  !newContest.endDate || !newContest.tweetText
+                    ? "bg-gray-400 cursor-not-allowed shadow-none hover:from-blue-600 hover:to-indigo-700 hover:shadow-none scale-100"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-md hover:shadow-lg hover:scale-105 focus:ring-blue-500"
+                }`}
+                disabled={!newContest.endDate || !newContest.tweetText}
               >
                 Create Tweet
               </button>
