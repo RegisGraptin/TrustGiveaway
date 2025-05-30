@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { getAddress } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { motion, AnimatePresence } from "framer-motion";
+import { TwitterIcon } from "../icon/TwitterIcon";
 
 export default function CreateContest() {
   const { writeContract, data: txHash, isPending } = useWriteContract();
@@ -62,10 +64,24 @@ export default function CreateContest() {
   const charsRemaining = 280 - newContest.tweetText.length;
 
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8">
-      <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-        Create New Twitter Contest
-      </h2>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="p-6"
+    >
+      <div className="text-center mb-6">
+        <div className="flex justify-center mb-4">
+          <div className="bg-blue-100 p-3 rounded-full">
+            <TwitterIcon className="h-10 w-10 text-blue-500" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900">
+          Create a New Contest
+        </h2>
+        <p className="mt-2 text-gray-600">
+          Set up a contest where participants tweet to enter
+        </p>
+      </div>
 
       <div className="space-y-6">
         {/* Tweet Text Field */}
@@ -88,7 +104,7 @@ export default function CreateContest() {
                   ? "border-red-500 focus:ring-red-500"
                   : "border-gray-300 focus:ring-blue-500"
               } rounded-lg shadow-sm focus:outline-none focus:ring-2 text-gray-600`}
-              placeholder="What should participants tweet to enter?"
+              placeholder="e.g., NFT Giveaway"
             />
             <div
               className={`absolute bottom-3 right-3 px-2 py-1 rounded text-xs font-medium ${
@@ -200,6 +216,6 @@ export default function CreateContest() {
           </>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
