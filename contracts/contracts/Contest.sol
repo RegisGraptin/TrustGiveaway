@@ -10,10 +10,20 @@ import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 contract Contest is Ownable, IEntropyConsumer {
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
-    address _private;
-    uint256 registryId = 1;
-    bool contestOngoing = false;
+    
+    // Contest metadata
+    string public twitterStatusId;
+    string public description;
+    uint256 public endTimeContest;
+    
+    uint256 registryId = 1;  // FIXME: What for ???
+
+    // FIXME: Need to be removed and handle it by endTimeContest (timer)
+    bool contestOngoing = true;  // When the contract is created, the contest start
+    
     uint256 winningNumber;
+
+    
 
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
@@ -36,14 +46,18 @@ contract Contest is Ownable, IEntropyConsumer {
 
     constructor(
         address entropyAddress,
-        address pythContract
+        address pythContract,
+        string memory _twitterStatusId,
+        string memory _description,
+        uint256 _endTimeContest
     ) Ownable(msg.sender) {
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
-    }
 
-    function createContest() public onlyOwner {
-        contestOngoing = true;
+        // Save contest metadata
+        twitterStatusId = _twitterStatusId;
+        description = _description;
+        endTimeContest = _endTimeContest;
     }
 
     // 1.0: Pyth Entropy Part:

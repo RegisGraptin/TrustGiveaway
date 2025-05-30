@@ -6,8 +6,8 @@ async function main() {
 
   console.log("Deploying with account:", deployer.address);
 
-  const Contest = await ethers.getContractFactory("Contest");
-  const contract = await Contest.deploy(
+  const ContestFactory = await ethers.getContractFactory("ContestFactory");
+  const contract = await ContestFactory.deploy(
     "0x4821932D0CDd71225A6d914706A621e0389D7061",
     "0x0708325268dF9F66270F1401206434524814508b",
     { gasLimit: 5_000_000 }
