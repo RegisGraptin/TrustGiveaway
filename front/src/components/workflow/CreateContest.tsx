@@ -1,15 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAddress } from "viem";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export default function CreateContest() {
+  const { writeContract, data: txHash, isPending } = useWriteContract();
+
+  const { isSuccess, isLoading } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      // FIXME: redirect?
+    }
+  }, [isSuccess]);
+
   const [newContest, setNewContest] = useState({
     tweetText: "",
     endDate: "",
+    tweetId: "",
   });
+
+  const [isTweetCreated, setIsTweetCreated] = useState(false);
+
   const [error, setError] = useState("");
 
-  const handleCreateContest = () => {
+  const handleCreateTweet = () => {
     if (!newContest.tweetText) {
       setError("Tweet text is required");
       return;
@@ -22,20 +40,22 @@ export default function CreateContest() {
     // Clear errors on successful validation
     setError("");
 
-    // Your contest creation logic here
-    const contest = {
-      ...newContest,
-      id: Date.now().toString(),
-      participants: [],
-      ended: false,
-      winner: null,
-    };
+    console.log("ok?");
+    const tweetUrl = new URL("https://twitter.com/intent/tweet");
+    tweetUrl.searchParams.set("text", newContest.tweetText);
+    window.open(tweetUrl.toString(), "_blank");
+    setIsTweetCreated(true);
+  };
 
-    // Reset form
-    // setNewContest({
-    //   tweetText: "",
-    //   endDate: "",
-    // });
+  const handleCreateContest = () => {
+    writeContract({
+      address: getAddress(process.env.NEXT_PUBLIC_USDC_ADDRESS!),
+      abi: Contest.abi,
+      functionName: "FIXME:",
+      args: [
+        // FIXME:
+      ],
+    });
   };
 
   const isTweetInvalid = newContest.tweetText.length > 280;
@@ -116,22 +136,59 @@ export default function CreateContest() {
           </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-            <p className="text-red-700 font-medium">{error}</p>
-          </div>
+        {isTweetCreated && (
+          <>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-lg font-medium text-gray-900 mb-2">
+                  Tweet Status ID
+                </label>
+                <input
+                  type="text"
+                  value={newContest.tweetId}
+                  onChange={(e) =>
+                    setNewContest({ ...newContest, tweetId: e.target.value })
+                  }
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+                />
+                <p className="mt-2 text-sm text-gray-600">
+                  Status ID defined of your tweet
+                </p>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-2">
+              <button
+                onClick={handleCreateContest}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-4 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-lg hover:scale-105"
+              >
+                Create Contest
+              </button>
+            </div>
+          </>
         )}
 
-        {/* Submit Button */}
-        <div className="pt-2">
-          <button
-            onClick={handleCreateContest}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-4 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-lg hover:scale-105"
-          >
-            Create Contest & Generate Tweet
-          </button>
-        </div>
+        {!isTweetCreated && (
+          <>
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                <p className="text-red-700 font-medium">{error}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <div className="pt-2">
+              <button
+                onClick={handleCreateTweet}
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white py-4 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-bold text-lg hover:scale-105"
+              >
+                Create Tweet
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
