@@ -118,6 +118,10 @@ contract Contest is Ownable, IEntropyConsumer {
         );
         emit PriceUpdated(price.price, price.conf, price.publishTime);
     }
+    // FIXME: TODO: When creating a contest, we need to create a price in ETH
+    // Then, the idea will be to convert the ETH price to USD for the user
+    // This is how we can use pyth network price feed!
+
 
     // 3.0: Registry part
 
