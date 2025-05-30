@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ContestCard } from "../contest/ContestCard";
 
-export function MyContest() {
+export function AllContest() {
   const [isLoading, setIsLoading] = useState(false);
   const [contests, setContests] = useState([
     {
@@ -40,7 +40,7 @@ export function MyContest() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">My Contests</h2>
+        <h2 className="text-2xl font-bold text-gray-900">All Contest</h2>
         <p className="text-gray-600">{contests.length} contests created</p>
       </div>
 
@@ -60,7 +60,7 @@ export function MyContest() {
             Create your first contest to start engaging with the community
           </p>
           <button
-            onClick={() => setActiveTab("create")}
+            // onClick={() => setActiveTab("create")}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
           >
             Create Contest

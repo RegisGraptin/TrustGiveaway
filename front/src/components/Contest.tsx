@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CreateContest from "@/components/workflow/CreateContest";
 import { ParticipatedContest } from "./workflow/ParticipatedContest";
 import { MyContest } from "./workflow/MyContest";
+import { AllContest } from "./workflow/AllContest";
 
 export default function Contest() {
   const [activeTab, setActiveTab] = useState("participated");
@@ -15,6 +16,7 @@ export default function Contest() {
       <div className="mb-8 flex justify-center">
         <div className="bg-white rounded-xl shadow-sm p-1 inline-flex">
           {[
+            { id: "all-contests", label: "All Contests" },
             { id: "participated", label: "Participated" },
             { id: "create", label: "Create Contest" },
             { id: "my-contests", label: "My Contests" },
@@ -52,6 +54,8 @@ export default function Contest() {
             transition={{ duration: 0.3 }}
             className="p-6"
           >
+            {activeTab === "all-contests" && <AllContest />}
+
             {activeTab === "participated" && <ParticipatedContest />}
 
             {activeTab === "create" && <CreateContest />}
