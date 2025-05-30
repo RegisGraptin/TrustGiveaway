@@ -1,6 +1,6 @@
 import { ethers } from "hardhat";
 import fs from "fs";
-
+import axios from "axios"
 
 const entropyAddress = "0x4821932D0CDd71225A6d914706A621e0389D7061";
 
@@ -65,6 +65,53 @@ console.log("Contest ended, waiting for winner...");
   const winner = await waitForWinner(ContestFactory);
   console.log("Winner info:", winner);
   console.log("Winning number:", winner.id.toString());
+
+  // Requesting priceFeeds
+  const priceIds = [
+    "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace", // ETH/USD
+  ];
+
+const priceIdsQuery = priceIds.join(",");
+
+const url = `https://xc-testnet.pyth.network/api/latest_price_feed_update_data?ids=${priceIdsQuery}`;
+
+const response = await axios.get(url, {
+  responseType: "arraybuffer",  // To receive raw binary data
+});
+
+
+  const updateData = [ethers.utils.hexlify(response.data)];
+
+    const feeForPrice = await ContestFactory.pyth().getUpdateFee(updateData);
+
+    const tx = await ContestFactory.exampleMethod(updateData, {
+    value: fee,
+    gasLimit: 2_000_000, // optionally specify gas limit
+  });
+
+  console.log("Transaction sent:", tx.hash);
+
+  const receipt = await tx.wait();
+
+  // Parse logs to find the PriceUpdated event
+  const event = receipt.logs
+    .map((log:any): any => {
+      try {
+        return ContestFactory.interface.parseLog(log);
+      } catch {
+        return null;
+      }
+    })
+    .find((parsed:any) => parsed && parsed.name === "PriceUpdated");
+
+  if (event) {
+    const { price, confidence, publishTime } = event.args;
+    console.log(`Price: ${price.toString()}`);
+    console.log(`Confidence: ${confidence.toString()}`);
+    console.log(`Published at: ${publishTime.toString()}`);
+  } else {
+    console.log("PriceUpdated event not found.");
+  }
 }
 
 main().catch((error) => {
