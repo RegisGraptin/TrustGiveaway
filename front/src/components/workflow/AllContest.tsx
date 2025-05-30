@@ -2,9 +2,18 @@
 
 import { useState } from "react";
 import { ContestCard } from "../contest/ContestCard";
+import { useContests, uselastContestId } from "@/hook/contest";
 
 export function AllContest() {
   const [isLoading, setIsLoading] = useState(false);
+
+  const { data: lastContestId, error } = uselastContestId();
+  const { data: conte } = useContests(lastContestId);
+
+  console.log("lastContestId:", lastContestId);
+  console.log("error:", error);
+  console.log("contests:", conte);
+
   const [contests, setContests] = useState([
     {
       id: "1",

@@ -6,8 +6,17 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { motion, AnimatePresence } from "framer-motion";
 import { TwitterIcon } from "../icon/TwitterIcon";
 
+import ContestFactory from "@/abi/ContestFactory.json";
+
 export default function CreateContest() {
-  const { writeContract, data: txHash, isPending } = useWriteContract();
+  const {
+    writeContract,
+    data: txHash,
+    isPending,
+    error: errorContract,
+  } = useWriteContract();
+
+  console.log(errorContract);
 
   const { isSuccess, isLoading } = useWaitForTransactionReceipt({
     hash: txHash,
@@ -16,6 +25,7 @@ export default function CreateContest() {
   useEffect(() => {
     if (isSuccess) {
       // FIXME: redirect?
+      console.log("Finished");
     }
   }, [isSuccess]);
 
@@ -50,13 +60,15 @@ export default function CreateContest() {
   };
 
   const handleCreateContest = () => {
+    // Convert End Date to Timestamps
+    const endDate = new Date(newContest.endDate);
+    const timestamp = Math.floor(endDate.getTime() / 1000);
+
     writeContract({
-      address: getAddress(process.env.NEXT_PUBLIC_USDC_ADDRESS!),
-      abi: Contest.abi,
-      functionName: "FIXME:",
-      args: [
-        // FIXME:
-      ],
+      address: getAddress(process.env.NEXT_PUBLIC_CONTEST_FACTORY_ADDRESS!),
+      abi: ContestFactory.abi,
+      functionName: "createNewContest",
+      args: [newContest.tweetId, newContest.tweetText, timestamp],
     });
   };
 
