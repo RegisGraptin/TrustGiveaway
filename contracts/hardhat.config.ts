@@ -17,17 +17,19 @@ const config: HardhatUserConfig = {
   networks: {
     optimismSepolia: {
       url: process.env.ALCHEMY_OPTIMISM_SEPOLIA_URL!,
-      accounts: [process.env.PRIVATE_KEY!,
-      process.env.ACCOUNT_2_PRIVATE_KEY!,
-      process.env.ACCOUNT_3_PRIVATE_KEY!,
-      process.env.ACCOUNT_4_PRIVATE_KEY!,
+      accounts: [
+        process.env.PRIVATE_KEY!,
+        // FIXME: Should only have one address here
+        // process.env.ACCOUNT_2_PRIVATE_KEY!,
+        // process.env.ACCOUNT_3_PRIVATE_KEY!,
+        // process.env.ACCOUNT_4_PRIVATE_KEY!,
       ],
       chainId: 11155420,
     },
   },
   etherscan: {
     apiKey: {
-      optimismSepolia: process.env.OPTIMISM_SEPOLIA_API_KEY!,
+      optimismSepolia: process.env.OPTIMISM_SEPOLIA_API_KEY!,  // FIXME: Variable name not clear - Need prefix with "etherscan"
     },
     customChains: [
       {

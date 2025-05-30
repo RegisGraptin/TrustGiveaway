@@ -34,16 +34,16 @@ async function main() {
   const { address } = JSON.parse(fs.readFileSync("./deployed.json", "utf-8"));
 
   // Connect contract to owner signer
-  const ContestFactory = await ethers.getContractAt("ContestFactory", address, owner);
+  const Contest = await ethers.getContractAt("Contest", address, owner);
 
   console.log("Creating contest...");
-  await (await ContestFactory.connect(owner).createContest()).wait();
+  await (await Contest.connect(owner).createContest()).wait();
 
   const handles = ["alice123", "bob456", "charlie789"];
   const signers = [account2, account3, account4];
 
   for (let i = 0; i < signers.length; i++) {
-    await (await ContestFactory.connect(signers[i]).register(handles[i])).wait();
+    await (await Contest.connect(signers[i]).register(handles[i])).wait();
     console.log(`Registered ${handles[i]} from ${signers[i].address}`);
   }
 
@@ -55,14 +55,14 @@ async function main() {
 
 console.log("Ending contest and requesting random number...");
 
-const fee = await ContestFactory.getEntropyFee(entropyProvider);
-await (await ContestFactory.endContest(dummyEntropy, { value: 100000000000000 })).wait();
+const fee = await Contest.getEntropyFee(entropyProvider);
+await (await Contest.endContest(dummyEntropy, { value: 100000000000000 })).wait();
 
 console.log("Contest ended, waiting for winner...");
 
 
   // Wait and poll for winner
-  const winner = await waitForWinner(ContestFactory);
+  const winner = await waitForWinner(Contest);
   console.log("Winner info:", winner);
   console.log("Winning number:", winner.id.toString());
 
@@ -82,9 +82,9 @@ const response = await axios.get(url, {
 
   const updateData = [ethers.utils.hexlify(response.data)];
 
-    const feeForPrice = await ContestFactory.pyth().getUpdateFee(updateData);
+    const feeForPrice = await Contest.pyth().getUpdateFee(updateData);
 
-    const tx = await ContestFactory.exampleMethod(updateData, {
+    const tx = await Contest.exampleMethod(updateData, {
     value: fee,
     gasLimit: 2_000_000, // optionally specify gas limit
   });
@@ -97,7 +97,7 @@ const response = await axios.get(url, {
   const event = receipt.logs
     .map((log:any): any => {
       try {
-        return ContestFactory.interface.parseLog(log);
+        return Contest.interface.parseLog(log);
       } catch {
         return null;
       }

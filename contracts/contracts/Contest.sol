@@ -7,7 +7,7 @@ import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 
-contract ContestFactory is Ownable, IEntropyConsumer {
+contract Contest is Ownable, IEntropyConsumer {
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
     address _private;
