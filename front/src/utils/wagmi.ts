@@ -8,7 +8,7 @@ export const config = getDefaultConfig({
   chains: [optimismSepolia],
   transports: {
     [optimismSepolia.id]: http(
-      `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`
+      `https://opt-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`
     ),
   },
   ssr: true,
