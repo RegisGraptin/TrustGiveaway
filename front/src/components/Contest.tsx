@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Head from "next/head";
+import CreateContest from "./workflow/CreateContest";
 
 export default function Contest() {
   const [contests, setContests] = useState([]);
@@ -12,27 +13,6 @@ export default function Contest() {
     endDate: "",
   });
   const [activeTab, setActiveTab] = useState("create");
-
-  const handleCreateContest = () => {
-    if (!newContest.title || !newContest.tweetText) return;
-
-    const contest = {
-      ...newContest,
-      id: Date.now().toString(),
-      participants: [],
-      ended: false,
-      winner: null,
-    };
-
-    setContests([contest, ...contests]);
-    setNewContest({
-      title: "",
-      description: "",
-      tweetText: "",
-      endDate: "",
-    });
-    setActiveTab("contests");
-  };
 
   const handleEndContest = (contestId) => {
     setContests(
@@ -78,101 +58,7 @@ export default function Contest() {
         </div>
 
         {/* Create Contest Form */}
-        {activeTab === "create" && (
-          <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Create New Contest
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contest Title
-                </label>
-                <input
-                  type="text"
-                  value={newContest.title}
-                  onChange={(e) =>
-                    setNewContest({ ...newContest, title: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Give your contest a name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={newContest.description}
-                  onChange={(e) =>
-                    setNewContest({
-                      ...newContest,
-                      description: e.target.value,
-                    })
-                  }
-                  rows="3"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Describe your contest rules and prizes"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Tweet Text
-                </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <textarea
-                    value={newContest.tweetText}
-                    onChange={(e) =>
-                      setNewContest({
-                        ...newContest,
-                        tweetText: e.target.value,
-                      })
-                    }
-                    rows="3"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter the tweet participants should post"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                    <span className="text-xs text-gray-500">
-                      {280 - newContest.tweetText.length}
-                    </span>
-                  </div>
-                </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  Participants will tweet this exact text to enter
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    End Date (Optional)
-                  </label>
-                  <input
-                    type="date"
-                    value={newContest.endDate}
-                    onChange={(e) =>
-                      setNewContest({ ...newContest, endDate: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <button
-                  onClick={handleCreateContest}
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium"
-                >
-                  Create Contest & Generate Tweet
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {activeTab === "create" && <CreateContest />}
 
         {/* Contest Listings */}
         {(activeTab === "contests" ||
