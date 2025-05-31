@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+import {TwitterAccountProver} from "./TwitterAccountProver.sol";
+
 import "./Contest.sol";
 
 contract ContestFactory {
@@ -13,12 +15,17 @@ contract ContestFactory {
     address pythContract;
     address entropyProvider;
 
+    address twitterAccountProver;
+
     constructor(
         address _entropyAddress,
         address _pythContract
     ) {
         entropyAddress = _entropyAddress;
         pythContract = _pythContract;
+
+        // Deployed new Twitter Account Verifier
+        twitterAccountProver = address(new TwitterAccountProver());
     }
 
     function createNewContest(
@@ -29,6 +36,7 @@ contract ContestFactory {
         
         // Create a new Contest and save the address 
         Contest _contest = new Contest(
+            twitterAccountProver,
             entropyAddress,
             pythContract,
             msg.sender,
