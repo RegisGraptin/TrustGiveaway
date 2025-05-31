@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { TwitterIcon } from "../icon/TwitterIcon";
 import { CalendarIcon } from "../icon/CalendarIcon";
 import { UsersIcon } from "../icon/UsersIcon";
+import { useTwitterAccountProof } from "@/hooks/useTwitterAccountProof";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   // Read contest data
@@ -20,6 +21,23 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   };
 
   const [contestProgress, setContestProgress] = useState(0);
+
+  const {
+    requestWebProof,
+    webProof,
+    callProver,
+    isPending,
+    isCallProverIdle,
+    result,
+    error,
+  } = useTwitterAccountProof();
+
+  const joinContest = () => {
+    console.log("joinContest");
+
+    // FIXME: Maybe provide a single smart contract for twitter verification?
+    requestWebProof();
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200">
@@ -150,7 +168,10 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
               </div>
 
               <div className="mt-auto space-y-3">
-                <button className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800">
+                <button
+                  onClick={joinContest}
+                  className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+                >
                   <TwitterIcon className="h-4 w-4 mr-2" />
                   Participate Now
                 </button>
