@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAddress } from "viem";
+import { Abi, getAddress } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { motion, AnimatePresence } from "framer-motion";
 import { TwitterIcon } from "../icon/TwitterIcon";

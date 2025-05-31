@@ -3,12 +3,11 @@ import { useEffect, useState } from "react";
 import { TwitterIcon } from "../icon/TwitterIcon";
 import { CalendarIcon } from "../icon/CalendarIcon";
 import { UsersIcon } from "../icon/UsersIcon";
-import { useTwitterAccountProof } from "@/hooks/useTwitterAccountProof";
 import { useTwitterPostProof } from "@/hooks/useTwitterPostProof";
+import { useAccount } from "wagmi";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
-  // Read contest data
-
+  const { address: userAddress } = useAccount();
   const { data: contestModel } = useContestDetail(contestAddress);
 
   const contest = {

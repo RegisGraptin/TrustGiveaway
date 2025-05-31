@@ -6,6 +6,7 @@ import CreateContest from "@/components/workflow/CreateContest";
 import { ParticipatedContest } from "./workflow/ParticipatedContest";
 import { MyContest } from "./workflow/MyContest";
 import { AllContest } from "./workflow/AllContest";
+import TwitterVerification from "./workflow/TwitterCheck";
 
 export default function Contest() {
   const [activeTab, setActiveTab] = useState("all-contests");
@@ -19,6 +20,7 @@ export default function Contest() {
             { id: "all-contests", label: "All Contests" },
             // { id: "participated", label: "Participated" },
             { id: "create", label: "Create Contest" },
+            { id: "account", label: "Twitter Account" },
             // { id: "my-contests", label: "My Contests" },
           ].map((tab) => (
             <button
@@ -59,6 +61,8 @@ export default function Contest() {
             {/* {activeTab === "participated" && <ParticipatedContest />} */}
 
             {activeTab === "create" && <CreateContest />}
+
+            {activeTab === "account" && <TwitterVerification />}
 
             {/* {activeTab === "my-contests" && <MyContest />} */}
           </motion.div>

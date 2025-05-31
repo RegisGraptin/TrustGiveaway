@@ -16,8 +16,6 @@ import Contest from "@/abi/Contest.json";
 export const useTwitterPostProof = (url: string) => {
   const statusId = url.match(/\/status\/(\d+)$/)![1];
 
-  console.log("statusId:", statusId);
-
   const webProofConfig: WebProofConfig<Abi, string> = {
     proverCallCommitment: {
       address: "0x0000000000000000000000000000000000000000",
