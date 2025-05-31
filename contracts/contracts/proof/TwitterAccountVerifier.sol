@@ -8,7 +8,7 @@ import {TwitterProver} from "./TwitterProver.sol";
 
 import {ITwitterAccountVerifier} from "../interfaces/ITwitterAccountVerifier.sol";
 
-contract TwiterAccountVerifier is ITwitterAccountVerifier, Verifier {
+contract TwitterAccountVerifier is ITwitterAccountVerifier, Verifier {
 
     address twitterProver;
 

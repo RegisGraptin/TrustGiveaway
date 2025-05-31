@@ -6,15 +6,29 @@ async function main() {
 
   console.log("Deploying ContestFactory with account:", deployer.address);
 
+  // Deploy proof verifier
+  const TwitterProver = await ethers.getContractFactory("TwitterProver");
+  const twitterProver = await TwitterProver.deploy();
+  await twitterProver.waitForDeployment();
+
+  const TwitterAccountVerifier = await ethers.getContractFactory("TwitterAccountVerifier");
+  const twitterAccountVerifier = await TwitterAccountVerifier.deploy(twitterProver.address);
+  await twitterAccountVerifier.waitForDeployment();
+
+
+  // FIXME: add doc link - opitmism sepolia I guess
   const entropyAddress = "0x4821932D0CDd71225A6d914706A621e0389D7061";
   const pythContract = "0x0708325268dF9F66270F1401206434524814508b";
 
   const ContestFactory = await ethers.getContractFactory("ContestFactory");
-  const factory = await ContestFactory.deploy(entropyAddress, pythContract, {
-    gasLimit: 5_000_000,
-  });
+  const factory = await ContestFactory.deploy(
+    twitterProver.address,
+    twitterAccountVerifier.address,
+    entropyAddress, 
+    pythContract, 
+  );
 
-  await factory.deployed();
+  await factory.waitForDeployment();
 
   console.log("✅ ContestFactory deployed at:", factory.address);
 
