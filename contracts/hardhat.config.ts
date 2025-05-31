@@ -1,6 +1,7 @@
 // hardhat.config.ts
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-verify";
+import "@nomicfoundation/hardhat-foundry";
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
@@ -20,9 +21,9 @@ const config: HardhatUserConfig = {
       accounts: [
         process.env.PRIVATE_KEY!,
         // FIXME: Should only have one address here
-        process.env.ACCOUNT_2_PRIVATE_KEY!,
-        process.env.ACCOUNT_3_PRIVATE_KEY!,
-        process.env.ACCOUNT_4_PRIVATE_KEY!,
+        // process.env.ACCOUNT_2_PRIVATE_KEY!,
+        // process.env.ACCOUNT_3_PRIVATE_KEY!,
+        // process.env.ACCOUNT_4_PRIVATE_KEY!,
       ],
       chainId: 11155420,
     },
