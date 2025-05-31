@@ -60,7 +60,7 @@ export function MyContest() {
             Create your first contest to start engaging with the community
           </p>
           <button
-            onClick={() => setActiveTab("create")}
+            // onClick={() => setActiveTab("create")}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
           >
             Create Contest
@@ -68,13 +68,13 @@ export function MyContest() {
         </div>
       ) : (
         <div className="space-y-6 w-full">
-          {contests.map((contest) => (
+          {/* {contests.map((contest) => (
             <ContestCard
               key={contest.id}
               contest={contest}
               isParticipated={false}
             />
-          ))}
+          ))} */}
         </div>
       )}
     </div>

@@ -63,13 +63,13 @@ export function ParticipatedContest() {
         </div>
       ) : (
         <div className="space-y-6 w-full">
-          {participatedContests.map((contest) => (
+          {/* {participatedContests.map((contest) => (
             <ContestCard
               key={contest.id}
               contest={contest}
               isParticipated={true}
             />
-          ))}
+          ))} */}
         </div>
       )}
     </div>

@@ -47,9 +47,8 @@ export default function TwitterVerification() {
 
   useEffect(() => {
     console.log("result:", result);
-    if (result) {
+    if (Array.isArray(result) && result.length >= 2) {
       console.log("result:", result);
-      console.log("args:", [result[0], result[1]]);
       writeContract({
         address: getAddress(process.env.NEXT_PUBLIC_TWITTER_VERIFIER_URL!),
         abi: TwitterAccountVerifier.abi,
@@ -165,7 +164,7 @@ export default function TwitterVerification() {
               <p className="text-sm font-mono break-all">{userAddress}</p>
             </div>
             <button
-              onClick={resetVerification}
+              // onClick={resetVerification}
               className="mt-6 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
             >
               Verify Another Account
