@@ -1,12 +1,13 @@
 import { useContestDetail } from "@/hooks/contest";
 import { useEffect, useState } from "react";
+import { TwitterIcon } from "../icon/TwitterIcon";
+import { CalendarIcon } from "../icon/CalendarIcon";
+import { UsersIcon } from "../icon/UsersIcon";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   // Read contest data
 
-  const { data: contestData } = useContestDetail(contestAddress);
-
-  console.log("contestData:", contestData);
+  const { data: contestModel } = useContestDetail(contestAddress);
 
   const contest = {
     id: "1",
@@ -14,42 +15,11 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     tweetText: "Win this amazing NFT! Follow and RT to enter! #NFTGiveaway",
     participants: 142,
     endDate: "2023-12-15",
-    ended: false,
-    winner: null,
+    ended: true,
+    winner: "@test",
   };
 
   const [contestProgress, setContestProgress] = useState(0);
-
-  const [daysLeft, setDaysLeft] = useState(0);
-
-  const [startContestDate, setStartContestDate] = useState<Date | undefined>(
-    undefined
-  );
-  const [endContestDate, setEndContestDate] = useState<Date | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    if (!contestData) return;
-
-    const today = new Date();
-    const startDate = new Date(Number(contestData.startTimeContest) * 1000);
-    const endDate = new Date(Number(contestData.endTimeContest) * 1000);
-
-    setStartContestDate(startDate);
-    setEndContestDate(endDate);
-
-    const totalDuration = endDate.getTime() - startDate.getTime();
-    const elapsed = today.getTime() - startDate.getTime();
-
-    const progress = Math.min(1, Math.max(0, elapsed / totalDuration)); // Clamp between 0 and 1
-
-    const remainingMs = Math.max(0, endDate.getTime() - today.getTime());
-    const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
-
-    setDaysLeft(remainingDays);
-    setContestProgress(Math.floor(progress * 100));
-  }, [contestData]);
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200">
@@ -61,17 +31,17 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
               <div className="flex items-center mt-1">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    contest.ended
+                    contestModel.isEnded()
                       ? "bg-green-100 text-green-800"
                       : "bg-blue-100 text-blue-800"
                   }`}
                 >
-                  {contest.ended ? "Completed" : "Active"}
+                  {contestModel.isEnded() ? "Completed" : "Active"}
                 </span>
-                {!contest.ended && (
+                {contestModel && (
                   <span className="ml-2 flex items-center text-xs text-gray-500">
                     <CalendarIcon className="h-3 w-3 mr-1" />
-                    Ends in {daysLeft} days
+                    Ends in {contestModel.getRemainingDays()} days
                   </span>
                 )}
               </div>
@@ -87,7 +57,7 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
 
           <div className="mt-4">
             <p className="text-sm text-gray-700 bg-blue-50 rounded-lg p-4 border border-blue-100">
-              "{contestData.description}"
+              "{contestModel.description}"
             </p>
           </div>
 
@@ -105,7 +75,7 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
             </div>
           </div>
 
-          {!contest.ended && (
+          {!contestModel.isEnded() && (
             <div className="px-2 pt-6">
               <div className="flex justify-between text-sm text-gray-600 mb-1">
                 <span>Contest Progress</span>
@@ -123,7 +93,7 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
 
         {/* Right Side - Actions & Status */}
         <div className="md:w-1/4 bg-gray-50 p-6">
-          {contest.ended ? (
+          {contestModel.isEnded() ? (
             <div className="h-full flex flex-col">
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">
@@ -192,52 +162,3 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     </div>
   );
 };
-
-// Icons
-const TwitterIcon = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="w-4 h-4"
-    {...props}
-  >
-    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-  </svg>
-);
-
-const CalendarIcon = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="w-4 h-4"
-    {...props}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-    />
-  </svg>
-);
-
-const UsersIcon = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    className="w-4 h-4"
-    {...props}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-    />
-  </svg>
-);
