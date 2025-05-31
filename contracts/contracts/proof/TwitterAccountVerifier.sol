@@ -6,7 +6,9 @@ import {Proof} from "vlayer-0.1.0/Proof.sol";
 
 import {TwitterProver} from "./TwitterProver.sol";
 
-contract TwiterAccountVerifier is Verifier {
+import {ITwitterAccountVerifier} from "../interfaces/ITwitterAccountVerifier.sol";
+
+contract TwiterAccountVerifier is ITwitterAccountVerifier, Verifier {
 
     address twitterProver;
 

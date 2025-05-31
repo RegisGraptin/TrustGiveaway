@@ -14,10 +14,9 @@ import {Verifier} from "vlayer-0.1.0/Verifier.sol";
 
 import {ContestFactory} from "./ContestFactory.sol";
 
-contract Contest is Ownable, Verifier, IEntropyConsumer {
+contract Contest is Ownable, IEntropyConsumer {
 
     address contestFactoryAddress;
-
 
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
