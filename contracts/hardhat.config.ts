@@ -17,22 +17,16 @@ const config: HardhatUserConfig = {
       { version: "0.8.27" },
     ],
   },
-  networks: {
-    optimismSepolia: {
-      url: process.env.ALCHEMY_OPTIMISM_SEPOLIA_URL!,
-      accounts: [
-        process.env.PRIVATE_KEY!,
-        // FIXME: Should only have one address here
-        // process.env.ACCOUNT_2_PRIVATE_KEY!,
-        // process.env.ACCOUNT_3_PRIVATE_KEY!,
-        // process.env.ACCOUNT_4_PRIVATE_KEY!,
-      ],
-      chainId: 11155420,
+   networks: {
+    'optimism-sepolia': {
+      url: 'https://sepolia.optimism.io',
+      accounts: [process.env.PRIVATE_KEY!],
     },
   },
   etherscan: {
     apiKey: {
-      optimismSepolia:  process.env.ETHERSCAN_OPTIMISM_SEPOLIA_API_KEY!,  // FIXME: Variable name not clear - Need prefix with "etherscan"
+      // Is not required by blockscout. Can be any non-empty string
+      'optimism-sepolia': "abc"
     },
     customChains: [
       {
@@ -40,7 +34,7 @@ const config: HardhatUserConfig = {
         chainId: 11155420,
         urls: {
           apiURL: "https://optimism-sepolia.blockscout.com/api",
-          browserURL: "https://optimism-sepolia.blockscout.com/"
+          browserURL: "https://optimism-sepolia.blockscout.com/",
         }
       }
     ]

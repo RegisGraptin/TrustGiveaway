@@ -16,8 +16,8 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 
 
 ```bash
-npx hardhat run ./scripts/deployContestFactory.ts --network optimismSepolia
-npx hardhat run scripts/interact.ts --network optimismSepolia
+npx hardhat run ./scripts/deployContestFactory.ts --network optimism-sepolia
+npx hardhat run scripts/testPythRandomNumber.ts --network optimism-sepolia
 ```
 
 FIXME: Add commands to verify smart contract

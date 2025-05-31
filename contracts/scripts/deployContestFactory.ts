@@ -4,7 +4,7 @@ import fs from "fs";
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying ContestFactory with account:", deployer.address);
+  console.log("Deploying ContestFactory with account:", await deployer.getAddress());
 
   // Deploy proof verifier
   const TwitterProver = await ethers.getContractFactory("TwitterProver");
@@ -12,34 +12,37 @@ async function main() {
   await twitterProver.waitForDeployment();
 
   const TwitterAccountVerifier = await ethers.getContractFactory("TwitterAccountVerifier");
-  const twitterAccountVerifier = await TwitterAccountVerifier.deploy(twitterProver.address);
+  const twitterAccountVerifier = await TwitterAccountVerifier.deploy(twitterProver.getAddress());
   await twitterAccountVerifier.waitForDeployment();
 
-
-  // FIXME: add doc link - opitmism sepolia I guess
-  const entropyAddress = "0x4821932D0CDd71225A6d914706A621e0389D7061";
-  const pythContract = "0x0708325268dF9F66270F1401206434524814508b";
+  // FIXME: add doc link - optimism sepolia I guess
+  const entropyAddress = "0x4821932D0CDd71225A6d914706A621e0389D7061"; // Pyth Entropy Contract
+  const pythContract = "0x0708325268dF9F66270F1401206434524814508b"; // Pyth Price Feeds contract
 
   const ContestFactory = await ethers.getContractFactory("ContestFactory");
   const factory = await ContestFactory.deploy(
-    twitterProver.address,
-    twitterAccountVerifier.address,
-    entropyAddress, 
-    pythContract, 
+    twitterProver.getAddress(),
+    twitterAccountVerifier.getAddress(),
+    entropyAddress,
+    pythContract,
   );
-
   await factory.waitForDeployment();
 
-  console.log("✅ ContestFactory deployed at:", factory.address);
+  console.log("✅ ContestFactory deployed at:", await factory.getAddress());
 
   // Wait a bit to ensure the deployment is indexed
-  await new Promise((resolve) => setTimeout(resolve, 30000)); // 30s delay
+  await new Promise((resolve) => setTimeout(resolve, 60000)); // 60s delay
 
   // Contract verification
   try {
     await run("verify:verify", {
-      address: factory.address,
-      constructorArguments: [entropyAddress, pythContract],
+      address: await factory.getAddress(),
+      constructorArguments: [
+        await twitterProver.getAddress(),
+        await twitterAccountVerifier.getAddress(),
+        entropyAddress,
+        pythContract,
+      ],
     });
     console.log("🔍 Contract verified successfully");
   } catch (err) {
@@ -48,7 +51,7 @@ async function main() {
 
   // Save to deployed.json
   const deployedInfo = {
-    contestFactory: factory.address,
+    contestFactory: await factory.getAddress(),
   };
 
   fs.writeFileSync("./deployed.json", JSON.stringify(deployedInfo, null, 2));
