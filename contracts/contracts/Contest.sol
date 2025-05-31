@@ -2,12 +2,20 @@
 pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+
 import {IEntropyConsumer} from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 
-contract Contest is Ownable, IEntropyConsumer {
+import {TwitterAccountProver} from "./TwitterAccountProver.sol";
+import {Proof} from "vlayer-0.1.0/Proof.sol";
+import {Verifier} from "vlayer-0.1.0/Verifier.sol";
+
+contract Contest is Ownable, Verifier, IEntropyConsumer {
+
+    address public twitterAccountProver;
+
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
 
@@ -39,6 +47,7 @@ contract Contest is Ownable, IEntropyConsumer {
     event PriceUpdated(int64 price, uint64 confidence, uint256 publishTime);
 
     constructor(
+        address _twitterAccountProver,
         address entropyAddress,
         address pythContract,
         address _owner,
@@ -46,8 +55,10 @@ contract Contest is Ownable, IEntropyConsumer {
         string memory _description,
         uint256 _endTimeContest
     ) Ownable(_owner) {
+        twitterAccountProver = _twitterAccountProver;
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
+        
         // Save contest metadata
         twitterStatusId = _twitterStatusId;
         description = _description;
@@ -156,6 +167,16 @@ contract Contest is Ownable, IEntropyConsumer {
         );
         // Store the sequence number to identify the callback request
     }
+
+    // function verify(Proof calldata, string memory username, address account)
+    //     public
+    //     onlyVerified(prover, WebProofProver.main.selector)
+    // {
+    //     uint256 tokenId = uint256(keccak256(abi.encodePacked(username)));
+    //     require(_ownerOf(tokenId) == address(0), "User has already minted a TwitterNFT");
+
+    //     _safeMint(account, tokenId);
+    // }
 
     function claim() public {
         require(
