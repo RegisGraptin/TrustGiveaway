@@ -14,7 +14,16 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={client}>
         <RainbowKitProvider>
-          <ProofProvider>{children}</ProofProvider>
+          <ProofProvider
+            config={{
+              proverUrl: process.env.NEXT_PUBLIC_PROVER_URL,
+              wsProxyUrl: process.env.NEXT_PUBLIC_WS_PROXY_URL,
+              notaryUrl: process.env.NEXT_PUBLIC_NOTARY_URL,
+              token: process.env.NEXT_PUBLIC_VLAYER_API_TOKEN,
+            }}
+          >
+            {children}
+          </ProofProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

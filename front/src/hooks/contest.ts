@@ -1,9 +1,9 @@
+import { useMemo } from "react";
 import { Abi, Address, getAddress } from "viem";
 import { useReadContract, useReadContracts } from "wagmi";
 
 import ContestFactory from "@/abi/ContestFactory.json";
 import Contest from "@/abi/Contest.json";
-import { useMemo } from "react";
 
 export function uselastContestId() {
   return useReadContract({
@@ -40,6 +40,7 @@ export function useContestDetail(contestAddress: Address | string | undefined) {
     contracts: [
       { ...commonConfig, functionName: "twitterStatusId" },
       { ...commonConfig, functionName: "description" },
+      { ...commonConfig, functionName: "startTimeContest" },
       { ...commonConfig, functionName: "endTimeContest" },
       { ...commonConfig, functionName: "owner" },
     ],
@@ -51,8 +52,9 @@ export function useContestDetail(contestAddress: Address | string | undefined) {
   const structuredData = {
     twitterStatusId: data?.[0]?.result ?? null,
     description: data?.[1]?.result ?? null,
-    endTimeContest: data?.[2]?.result ?? null,
-    owner: data?.[3]?.result ?? null,
+    startTimeContest: data?.[2]?.result ?? null,
+    endTimeContest: data?.[3]?.result ?? null,
+    owner: data?.[4]?.result ?? null,
   };
 
   return { data: structuredData, isLoading, error };

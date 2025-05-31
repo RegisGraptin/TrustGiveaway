@@ -16,8 +16,6 @@ export default function CreateContest() {
     error: errorContract,
   } = useWriteContract();
 
-  console.log(errorContract);
-
   const { isSuccess, isLoading } = useWaitForTransactionReceipt({
     hash: txHash,
   });
@@ -184,6 +182,15 @@ export default function CreateContest() {
                 </p>
               </div>
             </div>
+
+            {/* Error Message */}
+            {errorContract && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                <p className="text-red-700 font-medium">
+                  {errorContract.message}
+                </p>
+              </div>
+            )}
 
             {/* Submit Button */}
             <div className="pt-2">

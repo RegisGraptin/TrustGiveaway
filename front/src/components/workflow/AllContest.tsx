@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { ContestCard } from "../contest/ContestCard";
-import { useContests, uselastContestId } from "@/hook/contest";
+import { useContests, uselastContestId } from "@/hooks/contest";
 import { TwitterIcon } from "../icon/TwitterIcon";
 
 export function AllContest() {
-  const { data: lastContestId, error } = uselastContestId();
+  const { data: lastContestId } = uselastContestId();
   const { data: contestAddresses, isLoading } = useContests(
     lastContestId as bigint
   );

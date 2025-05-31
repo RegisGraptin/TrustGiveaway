@@ -1,4 +1,4 @@
-import { useContestDetail } from "@/hook/contest";
+import { useContestDetail } from "@/hooks/contest";
 import { useEffect, useState } from "react";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
@@ -7,7 +7,6 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   const { data: contestData } = useContestDetail(contestAddress);
 
   console.log("contestData:", contestData);
-
 
   const contest = {
     id: "1",
@@ -19,27 +18,38 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     winner: null,
   };
 
+  const [contestProgress, setContestProgress] = useState(0);
 
   const [daysLeft, setDaysLeft] = useState(0);
 
+  const [startContestDate, setStartContestDate] = useState<Date | undefined>(
+    undefined
+  );
+  const [endContestDate, setEndContestDate] = useState<Date | undefined>(
+    undefined
+  );
 
   useEffect(() => {
-    
     if (!contestData) return;
 
     const today = new Date();
+    const startDate = new Date(Number(contestData.startTimeContest) * 1000);
     const endDate = new Date(Number(contestData.endTimeContest) * 1000);
 
-    const diff = endDate- today;
-    console.log("diff", diff);
+    setStartContestDate(startDate);
+    setEndContestDate(endDate);
 
-    const _daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-    setDaysLeft(_daysLeft);
+    const totalDuration = endDate.getTime() - startDate.getTime();
+    const elapsed = today.getTime() - startDate.getTime();
 
-    console.log("_daysLeft:", _daysLeft)
+    const progress = Math.min(1, Math.max(0, elapsed / totalDuration)); // Clamp between 0 and 1
 
-    
-  }, [contestData])
+    const remainingMs = Math.max(0, endDate.getTime() - today.getTime());
+    const remainingDays = Math.ceil(remainingMs / (1000 * 60 * 60 * 24));
+
+    setDaysLeft(remainingDays);
+    setContestProgress(Math.floor(progress * 100));
+  }, [contestData]);
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200">
@@ -95,22 +105,16 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
             </div>
           </div>
 
-          {/* Progress Bar */}
           {!contest.ended && (
             <div className="px-2 pt-6">
               <div className="flex justify-between text-sm text-gray-600 mb-1">
                 <span>Contest Progress</span>
-                <span>{Math.min(100, Math.floor((daysLeft / 30) * 100))}%</span>
+                <span>{contestProgress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full"
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.floor((daysLeft / 30) * 100)
-                    )}%`,
-                  }}
+                  style={{ width: `${contestProgress}%` }}
                 ></div>
               </div>
             </div>
