@@ -14,6 +14,7 @@ contract Contest is Ownable, IEntropyConsumer {
     // Contest metadata
     string public twitterStatusId;
     string public description;
+    uint256 public startTimeContest;
     uint256 public endTimeContest;
     
     uint256 registryId = 1;  // FIXME: What for ???
@@ -58,6 +59,7 @@ contract Contest is Ownable, IEntropyConsumer {
         // Save contest metadata
         twitterStatusId = _twitterStatusId;
         description = _description;
+        startTimeContest = block.timestamp;
         endTimeContest = _endTimeContest;
     }
 

@@ -1,4 +1,5 @@
 import { useContestDetail } from "@/hook/contest";
+import { useEffect, useState } from "react";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   // Read contest data
@@ -6,6 +7,7 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   const { data: contestData } = useContestDetail(contestAddress);
 
   console.log("contestData:", contestData);
+
 
   const contest = {
     id: "1",
@@ -17,9 +19,27 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     winner: null,
   };
 
-  const today = new Date();
-  const endDate = new Date(contest.endDate);
-  const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+  const [daysLeft, setDaysLeft] = useState(0);
+
+
+  useEffect(() => {
+    
+    if (!contestData) return;
+
+    const today = new Date();
+    const endDate = new Date(Number(contestData.endTimeContest) * 1000);
+
+    const diff = endDate- today;
+    console.log("diff", diff);
+
+    const _daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+    setDaysLeft(_daysLeft);
+
+    console.log("_daysLeft:", _daysLeft)
+
+    
+  }, [contestData])
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200">
@@ -57,7 +77,7 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
 
           <div className="mt-4">
             <p className="text-sm text-gray-700 bg-blue-50 rounded-lg p-4 border border-blue-100">
-              "{contest.tweetText}"
+              "{contestData.description}"
             </p>
           </div>
 
