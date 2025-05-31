@@ -24,12 +24,14 @@ contract ContestFactory {
         address _twitterAccountVerifierAddress,
         address _entropyAddress,
         address _pythContract
+        // address _entropyProvider
     ) {
         twitterProverAddress = _twitterProverAddress;
         twitterAccountVerifierAddress = _twitterAccountVerifierAddress;
 
         entropyAddress = _entropyAddress;
         pythContract = _pythContract;
+        // entropyProvider = _entropyProvider;
     }
 
     function createNewContest(

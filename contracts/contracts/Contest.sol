@@ -28,7 +28,7 @@ contract Contest is Ownable, IEntropyConsumer {
     uint256 public endTimeContest;
     uint256 public numberOfParticipants;
     uint256 winningNumber;
-
+    // address entropyProvider;
 
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
@@ -107,7 +107,7 @@ contract Contest is Ownable, IEntropyConsumer {
     /// @notice register to a contest
     function register(string memory handle) public {
         // FIXME: add verifier for the post
-        require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "not_verified");
+        // require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "not_verified");
         require(block.timestamp <= endTimeContest, "Contest has ended");
 
         bytes32 convertedHandle = keccak256(abi.encodePacked(handle));
@@ -115,8 +115,7 @@ contract Contest is Ownable, IEntropyConsumer {
             alreadyRegistered[convertedHandle] == false,
             "Handle already registered"
         );
-        
-        // Create a new Registry entry, CHECK: This might not needed
+
 
         Registry memory newRegistry = Registry({
             id: numberOfParticipants,
@@ -129,15 +128,13 @@ contract Contest is Ownable, IEntropyConsumer {
         alreadyRegistered[convertedHandle] = true;
         hasUserParticipated[msg.sender] = true;
     }
-
     function endContest(bytes32 userRandomNumber) public payable {
         require(block.timestamp >= endTimeContest, "contest is still ongoing");
         // For future version, we need a way for the owner to claim back the price,
         // else the fund will be locked if no one participate.
         require(numberOfParticipants > 0, "No participants registered");
-
-        // random Number generation
         address entropyProvider = entropy.getDefaultProvider();
+        // random Number generation
         uint256 fee = entropy.getFee(entropyProvider);
 
         // Request the random number with the callback
@@ -148,6 +145,17 @@ contract Contest is Ownable, IEntropyConsumer {
         );
     }
 
+  function requestRandomNumber(bytes32 userRandomNumber) external payable {
+    // Get the default provider and the fee for the request
+    address entropyProvider = entropy.getDefaultProvider();
+    uint256 fee = entropy.getFee(entropyProvider);
+ 
+    // Request the random number with the callback
+    entropy.requestWithCallback{ value: fee }(
+      entropyProvider,
+      userRandomNumber
+    );
+  }
     /// @notice only winner can call it
     function claim() public {
         require(
