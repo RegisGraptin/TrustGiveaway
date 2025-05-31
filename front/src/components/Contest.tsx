@@ -8,7 +8,7 @@ import { MyContest } from "./workflow/MyContest";
 import { AllContest } from "./workflow/AllContest";
 
 export default function Contest() {
-  const [activeTab, setActiveTab] = useState("participated");
+  const [activeTab, setActiveTab] = useState("all-contests");
 
   return (
     <>
