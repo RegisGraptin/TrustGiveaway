@@ -30,23 +30,21 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      optimismSepolia: process.env.OPTIMISM_SEPOLIA_API_KEY!,  // FIXME: Variable name not clear - Need prefix with "etherscan"
+      optimismSepolia:  process.env.ETHERSCAN_OPTIMISM_SEPOLIA_API_KEY!,  // FIXME: Variable name not clear - Need prefix with "etherscan"
     },
     customChains: [
       {
-        network: "optimismSepolia",
+        network: "optimism-sepolia",
         chainId: 11155420,
         urls: {
-          apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
-          browserURL: "https://sepolia-optimistic.etherscan.io"
+          apiURL: "https://optimism-sepolia.blockscout.com/api",
+          browserURL: "https://optimism-sepolia.blockscout.com/"
         }
       }
     ]
   },
   sourcify: {
-    enabled: true,
-    apiUrl: "https://api-sepolia-optimistic.etherscan.io/api",
-    browserUrl: "https://sepolia-optimistic.etherscan.io",
+    enabled: false
   }
 };
 
