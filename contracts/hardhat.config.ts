@@ -2,6 +2,8 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-verify";
 import "@nomicfoundation/hardhat-foundry";
+import "@openzeppelin/hardhat-upgrades";
+
 import { HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
