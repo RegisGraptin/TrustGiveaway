@@ -17,9 +17,9 @@ export default function Contest() {
         <div className="bg-white rounded-xl shadow-sm p-1 inline-flex">
           {[
             { id: "all-contests", label: "All Contests" },
-            { id: "participated", label: "Participated" },
+            // { id: "participated", label: "Participated" },
             { id: "create", label: "Create Contest" },
-            { id: "my-contests", label: "My Contests" },
+            // { id: "my-contests", label: "My Contests" },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -56,11 +56,11 @@ export default function Contest() {
           >
             {activeTab === "all-contests" && <AllContest />}
 
-            {activeTab === "participated" && <ParticipatedContest />}
+            {/* {activeTab === "participated" && <ParticipatedContest />} */}
 
             {activeTab === "create" && <CreateContest />}
 
-            {activeTab === "my-contests" && <MyContest />}
+            {/* {activeTab === "my-contests" && <MyContest />} */}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -3,7 +3,9 @@ import { Abi, Address, getAddress } from "viem";
 import { useReadContract, useReadContracts } from "wagmi";
 
 import ContestFactory from "@/abi/ContestFactory.json";
-import Contest from "@/abi/Contest.json";
+import ContestAbi from "@/abi/Contest.json";
+import { ContestData } from "@/types/contest";
+import { ContestModel } from "@/models/ContestModel";
 
 export function uselastContestId() {
   return useReadContract({
@@ -32,7 +34,7 @@ export function useContestDetail(contestAddress: Address | string | undefined) {
     if (!contestAddress) return null;
     return {
       address: getAddress(contestAddress as string),
-      abi: Contest.abi,
+      abi: ContestAbi.abi,
     };
   }, [contestAddress]);
 
@@ -49,13 +51,18 @@ export function useContestDetail(contestAddress: Address | string | undefined) {
     },
   });
 
-  const structuredData = {
-    twitterStatusId: data?.[0]?.result ?? null,
-    description: data?.[1]?.result ?? null,
-    startTimeContest: data?.[2]?.result ?? null,
-    endTimeContest: data?.[3]?.result ?? null,
-    owner: data?.[4]?.result ?? null,
+  const structuredData: ContestData = {
+    twitterStatusId: (data?.[0]?.result as string) ?? null,
+    description: (data?.[1]?.result as string) ?? null,
+    startTimeContest: (data?.[2]?.result as number) ?? null,
+    endTimeContest: (data?.[3]?.result as number) ?? null,
+    owner: (data?.[4]?.result as string) ?? null,
   };
 
-  return { data: structuredData, isLoading, error };
+  const contest = useMemo(
+    () => new ContestModel(structuredData),
+    [structuredData]
+  );
+
+  return { data: contest, isLoading, error };
 }
