@@ -12,7 +12,7 @@
     <br />
     <a href="https://github.com/RegisGraptin/TrustGiveaway">Code</a>
     &middot;
-    <a href="#">View Demo</a>
+    <a href="https://trust-giveaway.vercel.app/">View Demo</a>
     &middot;
     <a href="#">Video Presentation</a>
     
