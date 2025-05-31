@@ -5,6 +5,8 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
 
   const { data: contestData } = useContestDetail(contestAddress);
 
+  console.log("contestData:", contestData);
+
   const contest = {
     id: "1",
     title: "NFT Giveaway",
