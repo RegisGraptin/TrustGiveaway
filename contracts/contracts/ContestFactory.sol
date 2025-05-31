@@ -30,6 +30,7 @@ contract ContestFactory {
         Contest _contest = new Contest(
             entropyAddress,
             pythContract,
+            msg.sender,
             _twitterStatusId,
             _description,
             _endTimeContest

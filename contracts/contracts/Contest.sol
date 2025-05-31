@@ -47,10 +47,11 @@ contract Contest is Ownable, IEntropyConsumer {
     constructor(
         address entropyAddress,
         address pythContract,
+        address _owner,
         string memory _twitterStatusId,
         string memory _description,
         uint256 _endTimeContest
-    ) Ownable(msg.sender) {
+    ) Ownable(_owner) {
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
 
