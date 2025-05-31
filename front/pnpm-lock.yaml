@@ -15,11 +15,11 @@ importers:
         specifier: ^5.79.0
         version: 5.79.0(react@19.1.0)
       '@vlayer/react':
-        specifier: 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966
-        version: 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(@vlayer/sdk@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1)))(react@19.1.0)(typescript@5.8.3)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(wagmi@2.15.4(@tanstack/query-core@5.79.0)(@tanstack/react-query@5.79.0(react@19.1.0))(@types/react@19.1.6)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(zod@3.25.42))
+        specifier: 1.0.2
+        version: 1.0.2(@vlayer/sdk@1.0.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1)))(react@19.1.0)(typescript@5.8.3)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(wagmi@2.15.4(@tanstack/query-core@5.79.0)(@tanstack/react-query@5.79.0(react@19.1.0))(@types/react@19.1.6)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(zod@3.25.42))
       '@vlayer/sdk':
-        specifier: 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966
-        version: 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))
+        specifier: 1.0.2
+        version: 1.0.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))
       framer-motion:
         specifier: ^12.15.0
         version: 12.15.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1233,17 +1233,17 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
-  '@vlayer/react@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966':
-    resolution: {integrity: sha512-LM6HSTDpX4N9gk8B3FCsY+YY4PvOqNYfNFAOXANZz4J7pwfzj2B2IJg3dF7wAHgOY89XFJ9bgPlATHQVzzkATA==}
+  '@vlayer/react@1.0.2':
+    resolution: {integrity: sha512-K4jKnhQsmtpwpa5aIArSt1L8VaLFdJPv3UWZL6MlSnBoTtWt86NNsjTYdOMFutwslbeVDmbeNDD0I+FuMOF5Ew==}
     peerDependencies:
-      '@vlayer/sdk': 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966
+      '@vlayer/sdk': 1.0.2
       react: ^18 || ^19
       typescript: ^5.0.0
       viem: 2.x
       wagmi: 2.x
 
-  '@vlayer/sdk@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966':
-    resolution: {integrity: sha512-gcSExzfi7e+I6cBKhJzCvLcoIAl6nobUTVktuqnWfbjCSOWdBkjY/3FT6cxgk4tG3GWACcrm6bKMjcETQ4is6Q==}
+  '@vlayer/sdk@1.0.2':
+    resolution: {integrity: sha512-es9Un8Dv870De11fu3efWoR/WxewLsyQPfrXp4I9DaRqIbRKb9Op3XQgRxtt4pYLNgXGci9w20Qpxd0bTK2JiQ==}
     peerDependencies:
       typescript: ^5.6.3
 
@@ -5021,15 +5021,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vlayer/react@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(@vlayer/sdk@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1)))(react@19.1.0)(typescript@5.8.3)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(wagmi@2.15.4(@tanstack/query-core@5.79.0)(@tanstack/react-query@5.79.0(react@19.1.0))(@types/react@19.1.6)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(zod@3.25.42))':
+  '@vlayer/react@1.0.2(@vlayer/sdk@1.0.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1)))(react@19.1.0)(typescript@5.8.3)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(wagmi@2.15.4(@tanstack/query-core@5.79.0)(@tanstack/react-query@5.79.0(react@19.1.0))(@types/react@19.1.6)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(zod@3.25.42))':
     dependencies:
-      '@vlayer/sdk': 1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))
+      '@vlayer/sdk': 1.0.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))
       react: 19.1.0
       typescript: 5.8.3
       viem: 2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42)
       wagmi: 2.15.4(@tanstack/query-core@5.79.0)(@tanstack/react-query@5.79.0(react@19.1.0))(@types/react@19.1.6)(bufferutil@4.0.9)(react@19.1.0)(typescript@5.8.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(zod@3.25.42))(zod@3.25.42)
 
-  '@vlayer/sdk@1.0.2-nightly-20250530-3f01bfdcfb6b20d608f7bcef25f9907164ad3966(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))':
+  '@vlayer/sdk@1.0.2(bufferutil@4.0.9)(typescript@5.8.3)(utf-8-validate@5.0.10)(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))':
     dependencies:
       '@vitejs/plugin-react': 4.5.0(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1))
       base64-js: 1.5.1

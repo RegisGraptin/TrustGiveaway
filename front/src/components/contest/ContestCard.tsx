@@ -4,6 +4,7 @@ import { TwitterIcon } from "../icon/TwitterIcon";
 import { CalendarIcon } from "../icon/CalendarIcon";
 import { UsersIcon } from "../icon/UsersIcon";
 import { useTwitterAccountProof } from "@/hooks/useTwitterAccountProof";
+import { useTwitterPostProof } from "@/hooks/useTwitterPostProof";
 
 export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
   // Read contest data
@@ -30,7 +31,10 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     isCallProverIdle,
     result,
     error,
-  } = useTwitterAccountProof();
+  } = useTwitterPostProof(
+    "https://x.com/ethbelgrade/status/1928732641588633898"
+  );
+  // } = useTwitterAccountProof();
 
   const joinContest = () => {
     console.log("joinContest");
