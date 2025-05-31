@@ -22,3 +22,26 @@ npx hardhat run scripts/testPythRandomNumber.ts --network optimism-sepolia
 
 FIXME: Add commands to verify smart contract
 FIXME: Add blockscout link direclty!
+
+
+
+## Deploy on forge
+
+```bash
+forge script \
+  --rpc-url $ALCHEMY_OPTIMISM_SEPOLIA_URL \
+  --private-key $PRIVATE_KEY \
+  scripts/ContestFactory.s.sol:ContestFactoryScript \
+  --verify \
+  --verifier blockscout \
+  --verifier-url https://https://optimism-sepolia.blockscout.com/api/ \
+  --broadcast
+```
+
+```bash
+forge script \
+  --rpc-url $ALCHEMY_OPTIMISM_SEPOLIA_URL \
+  --private-key $PRIVATE_KEY \
+  scripts/ContestFactory.s.sol:ContestFactoryScript \
+  --broadcast
+```

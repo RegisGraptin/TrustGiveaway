@@ -12,7 +12,7 @@ export default function Header() {
           >
             TwitterContest
           </Link>
-          {/* <ConnectButton /> */}
+          <ConnectButton />
         </div>
       </nav>
     </>
