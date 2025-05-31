@@ -11,6 +11,7 @@ contract ContestFactory {
 
     address entropyAddress;
     address pythContract;
+    address entropyProvider;
 
     constructor(
         address _entropyAddress,

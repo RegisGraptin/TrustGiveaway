@@ -20,9 +20,9 @@ const config: HardhatUserConfig = {
       accounts: [
         process.env.PRIVATE_KEY!,
         // FIXME: Should only have one address here
-        // process.env.ACCOUNT_2_PRIVATE_KEY!,
-        // process.env.ACCOUNT_3_PRIVATE_KEY!,
-        // process.env.ACCOUNT_4_PRIVATE_KEY!,
+        process.env.ACCOUNT_2_PRIVATE_KEY!,
+        process.env.ACCOUNT_3_PRIVATE_KEY!,
+        process.env.ACCOUNT_4_PRIVATE_KEY!,
       ],
       chainId: 11155420,
     },

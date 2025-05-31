@@ -10,21 +10,14 @@ import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 contract Contest is Ownable, IEntropyConsumer {
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
-    
+
     // Contest metadata
     string public twitterStatusId;
     string public description;
     uint256 public startTimeContest;
     uint256 public endTimeContest;
-    
-    uint256 registryId = 1;  // FIXME: What for ???
-
-    // FIXME: Need to be removed and handle it by endTimeContest (timer)
-    bool contestOngoing = true;  // When the contract is created, the contest start
-    
+    uint256 public numberOfParticipants;
     uint256 winningNumber;
-
-    
 
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
@@ -39,8 +32,8 @@ contract Contest is Ownable, IEntropyConsumer {
 
     Registry[] public registries;
 
-    mapping(address => string) handleOfAddress;
-    mapping(string => address) public addressOfHandle;
+    mapping(bytes32 hashinBytes => bool seen) public alreadyRegistered;
+    mapping(address => bool) public hasUserParticipated;
 
     event WinnerChosen(uint256 winningNumber);
     event PriceUpdated(int64 price, uint64 confidence, uint256 publishTime);
@@ -55,7 +48,6 @@ contract Contest is Ownable, IEntropyConsumer {
     ) Ownable(_owner) {
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
-
         // Save contest metadata
         twitterStatusId = _twitterStatusId;
         description = _description;
@@ -65,7 +57,7 @@ contract Contest is Ownable, IEntropyConsumer {
 
     // 1.0: Pyth Entropy Part:
 
-    function requestRandomNumber(bytes32 userRandomNumber) external payable {
+    function requestRandomNumber(bytes32 userRandomNumber) public payable {
         // Get the default provider and the fee for the request
         address entropyProvider = entropy.getDefaultProvider();
         uint256 fee = entropy.getFee(entropyProvider);
@@ -83,13 +75,8 @@ contract Contest is Ownable, IEntropyConsumer {
         address provider,
         bytes32 randomNumber
     ) internal override {
-        require(
-            !contestOngoing,
-            "Contest must be ended before resolving winner"
-        );
-
         uint256 rawRandom = uint256(randomNumber);
-        winningNumber = (rawRandom % registryId) + 1;
+        winningNumber = (rawRandom % numberOfParticipants);
 
         emit WinnerChosen(winningNumber);
     }
@@ -121,43 +108,53 @@ contract Contest is Ownable, IEntropyConsumer {
         );
         emit PriceUpdated(price.price, price.conf, price.publishTime);
     }
+
     // FIXME: TODO: When creating a contest, we need to create a price in ETH
     // Then, the idea will be to convert the ETH price to USD for the user
     // This is how we can use pyth network price feed!
 
-
     // 3.0: Registry part
 
     function register(string memory handle) public {
-        require(contestOngoing == true, "Contest is not open");
-        // require(addressOfHandle[handle] == address(0), "Handle already taken");
-
-        // Create a new Registry entry
+        require(block.timestamp <= endTimeContest, "Contest has ended");
+        // DONE: Check with Regis
+        // convert string to bytes32 for store in mapping
+        bytes32 convertedHandle = keccak256(abi.encodePacked(handle));
+        require(
+            alreadyRegistered[convertedHandle] == false,
+            "Handle already registered"
+        );
+        
+        // Create a new Registry entry, CHECK: This might not needed
 
         Registry memory newRegistry = Registry({
-            id: registryId,
+            id: numberOfParticipants,
             registryAddress: msg.sender,
             twitterHandle: handle
         });
 
+        numberOfParticipants++;
         registries.push(newRegistry);
-        registryId++;
-        addressOfHandle[handle] = msg.sender;
+        alreadyRegistered[convertedHandle] = true;
+        hasUserParticipated[msg.sender] = true;
     }
 
-    function endContest(bytes32 userRandomNumber) public payable onlyOwner {
-        require(contestOngoing, "No contest ongoing");
-        require(registryId > 1, "No participants");
+    function endContest(bytes32 userRandomNumber) public payable {
+        // DO we need any more requirement here?
+        // Or does this happen automatically once we reach endTime?
+        require(block.timestamp >= endTimeContest, "contest is still ongoing");
+        require(numberOfParticipants > 0, "No participants registered");
 
-        contestOngoing = false;
-
+        // random Number generation
         address entropyProvider = entropy.getDefaultProvider();
         uint256 fee = entropy.getFee(entropyProvider);
 
-        entropy.requestWithCallback{value: fee}(
+        // Request the random number with the callback
+        uint64 sequenceNumber = entropy.requestWithCallback{value: fee}(
             entropyProvider,
             userRandomNumber
         );
+        // Store the sequence number to identify the callback request
     }
 
     function claim() public {
@@ -174,6 +171,7 @@ contract Contest is Ownable, IEntropyConsumer {
     }
 
     function getWinner() public view returns (Registry memory) {
+        require(block.timestamp <= endTimeContest, "Contest is still ongoing");
         require(winningNumber > 0, "Winner not chosen yet");
 
         return registries[winningNumber - 1];
@@ -186,5 +184,9 @@ contract Contest is Ownable, IEntropyConsumer {
 
     function getEntropyFee(address provider) public view returns (uint256) {
         return entropy.getFee(provider);
+    }
+
+    function getEntropyProvider() public view returns (address) {
+        return entropy.getDefaultProvider();
     }
 }

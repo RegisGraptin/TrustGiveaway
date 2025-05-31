@@ -7,7 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "types": ["hardhat", "node"]
+    "types": ["hardhat", "node", "jest"]
   },
   "include": ["./scripts", "./test", "./typechain", "./hardhat.config.ts"]
 }
