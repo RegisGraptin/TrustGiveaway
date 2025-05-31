@@ -1,4 +1,8 @@
-import {Strings} from "@openzeppelin-contracts/contracts/utils/Strings.sol";
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.27;
+
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+
 import {Proof} from "vlayer-0.1.0/Proof.sol";
 import {Prover} from "vlayer-0.1.0/Prover.sol";
 import {Web, WebProof, WebProofLib, WebLib} from "vlayer-0.1.0/WebProof.sol";
