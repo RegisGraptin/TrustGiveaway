@@ -13,13 +13,13 @@ contract TwitterProver is Prover {
     using WebLib for Web;
 
     string twitterAccountUrl = "https://api.x.com/1.1/account/settings.json";
+    string twitterPostUrl = "https://x.com/i/api/graphql";
 
     function proofOfAccount(WebProof calldata webProof)
         public
         view
         returns (Proof memory, string memory)
     {
-        // FIXME: Chck new function name!
         Web memory web = webProof.verifyWithUrlPrefix(twitterAccountUrl);
 
         string memory screenName = web.jsonGetString("screen_name");
@@ -32,7 +32,10 @@ contract TwitterProver is Prover {
         view
         returns (Proof memory, string memory, address)
     {
-        // TODO: Extract and verify information
+        Web memory web = webProof.verifyWithUrlPrefix(twitterAccountUrl);
+        string memory screenName = web.jsonGetString("data.threaded_conversation_with_injections_v2.instructions.entries[1].content.items.item.itemContent.tweet_results.result.core.user_results.result.core.screen_name");
+        return (proof(), screenName);
+        
     }
 
     
