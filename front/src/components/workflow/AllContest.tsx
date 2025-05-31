@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { ContestCard } from "../contest/ContestCard";
 import { useContests, uselastContestId } from "@/hooks/contest";
 import { TwitterIcon } from "../icon/TwitterIcon";
+import { useTwitterAccountVerified } from "@/hooks/useTwitterAccountProof";
 
 export function AllContest() {
+  const { data: isTwitterAccountVerified } = useTwitterAccountVerified();
+
   const { data: lastContestId } = uselastContestId();
   const { data: contestAddresses, isLoading } = useContests(
     lastContestId as bigint
@@ -49,6 +51,7 @@ export function AllContest() {
               <ContestCard
                 key={index}
                 contestAddress={contestResult.result as string}
+                joinEnable={isTwitterAccountVerified}
               />
             ))}
         </div>

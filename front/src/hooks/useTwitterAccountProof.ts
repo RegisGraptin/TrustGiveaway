@@ -7,14 +7,14 @@ import {
 } from "@vlayer/react";
 import { useLocalStorage } from "usehooks-ts";
 import { WebProofConfig, ProveArgs } from "@vlayer/sdk";
-import { Abi, Address, ContractFunctionName } from "viem";
+import { Abi, Address, ContractFunctionName, getAddress } from "viem";
 import { startPage, expectUrl, notarize } from "@vlayer/sdk/web_proof";
 import { UseChainError, WebProofError } from "../errors";
 // import webProofProver from "../../../out/WebProofProver.sol/WebProofProver";
 
 import TwitterAccountVerifier from "@/abi/TwitterAccountVerifier.json";
 import TwitterProver from "@/abi/TwitterProver.json";
-import { useAccount } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { optimismSepolia } from "viem/chains";
 
 const webProofConfig: WebProofConfig<Abi, string> = {
@@ -129,4 +129,18 @@ export const useTwitterAccountProof = () => {
     result,
     error,
   };
+};
+
+export const useTwitterAccountVerified = () => {
+  const { address: userAddress } = useAccount();
+
+  return useReadContract({
+    address: getAddress(process.env.NEXT_PUBLIC_TWITTER_VERIFIER_URL!),
+    abi: TwitterAccountVerifier.abi,
+    functionName: "isVerified",
+    args: [userAddress],
+    query: {
+      enabled: !!userAddress,
+    },
+  });
 };

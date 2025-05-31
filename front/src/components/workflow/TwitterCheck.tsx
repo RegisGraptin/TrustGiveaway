@@ -2,27 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useAccount, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { TwitterIcon } from "../icon/TwitterIcon";
 
-import { useTwitterAccountProof } from "@/hooks/useTwitterAccountProof";
+import {
+  useTwitterAccountProof,
+  useTwitterAccountVerified,
+} from "@/hooks/useTwitterAccountProof";
 import TwitterAccountVerifier from "@/abi/TwitterAccountVerifier.json";
 import { getAddress } from "viem";
 
 export default function TwitterVerification() {
+  const {
+    data: isTwitterAccountVerified,
+    refetch: refetchTwitterAccountVerified,
+  } = useTwitterAccountVerified();
   const { address: userAddress } = useAccount();
-  const [verificationStep, setVerificationStep] = useState<
-    "input" | "tweet" | "verify" | "success"
-  >("input");
-  const [twitterHandle, setTwitterHandle] = useState("");
 
   const {
     writeContract,
-    data: txHash,
+    data: hash,
     error: errorContract,
   } = useWriteContract();
 
-  console.log("errorContract:", errorContract);
+  const { isSuccess: isTxConfirmed } = useWaitForTransactionReceipt({ hash });
 
   const {
     requestWebProof,
@@ -58,6 +65,13 @@ export default function TwitterVerification() {
     }
   }, [result]);
 
+  // Refetch on chain info
+  useEffect(() => {
+    if (isTxConfirmed) {
+      refetchTwitterAccountVerified();
+    }
+  }, [isTxConfirmed]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -78,9 +92,8 @@ export default function TwitterVerification() {
         </p>
       </div>
 
-      <div className="space-y-6 bg-white p-6 rounded-xl shadow-md">
-        {/* Step 1: Handle Input */}
-        {verificationStep === "input" && (
+      <div className="space-y-6 bg-white p-6">
+        {!isTwitterAccountVerified && (
           <div className="space-y-4">
             <div>
               {/* <label className="block text-lg font-medium text-gray-900 mb-2">
@@ -116,28 +129,12 @@ export default function TwitterVerification() {
               disabled={isPendingProof}
               className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200"
             >
-              Generate Verification Code
+              Verify Twitter Account
             </button>
           </div>
         )}
 
-        {/* Step 3: Verification in progress */}
-        {verificationStep === "verify" && (
-          <div className="text-center py-8">
-            <div className="flex justify-center">
-              <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <h3 className="mt-4 text-xl font-medium text-gray-900">
-              Verifying Ownership
-            </h3>
-            <p className="mt-2 text-gray-600">
-              Generating and verifying zero-knowledge proof...
-            </p>
-          </div>
-        )}
-
-        {/* Step 4: Success */}
-        {verificationStep === "success" && (
+        {(isTwitterAccountVerified as boolean) && (
           <div className="text-center py-8">
             <div className="flex justify-center">
               <svg
@@ -157,18 +154,6 @@ export default function TwitterVerification() {
             <h3 className="mt-4 text-xl font-medium text-gray-900">
               Verification Successful!
             </h3>
-            <p className="mt-2 text-gray-600">
-              @{twitterHandle} is now verified to your wallet address.
-            </p>
-            <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-              <p className="text-sm font-mono break-all">{userAddress}</p>
-            </div>
-            <button
-              // onClick={resetVerification}
-              className="mt-6 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg"
-            >
-              Verify Another Account
-            </button>
           </div>
         )}
       </div>

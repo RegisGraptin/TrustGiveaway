@@ -14,7 +14,9 @@ import { UseChainError, WebProofError } from "../errors";
 import Contest from "@/abi/Contest.json";
 
 export const useTwitterPostProof = (url: string) => {
-  const statusId = url.match(/\/status\/(\d+)$/)![1];
+  const match = url.match(/\/status\/(\d+)$/);
+
+  const statusId = match ? match[1] : "";
 
   const webProofConfig: WebProofConfig<Abi, string> = {
     proverCallCommitment: {
