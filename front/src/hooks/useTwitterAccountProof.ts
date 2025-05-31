@@ -7,12 +7,15 @@ import {
 } from "@vlayer/react";
 import { useLocalStorage } from "usehooks-ts";
 import { WebProofConfig, ProveArgs } from "@vlayer/sdk";
-import { Abi, Address, ContractFunctionName } from "viem";
+import { Abi, Address, ContractFunctionName, getAddress } from "viem";
 import { startPage, expectUrl, notarize } from "@vlayer/sdk/web_proof";
 import { UseChainError, WebProofError } from "../errors";
 // import webProofProver from "../../../out/WebProofProver.sol/WebProofProver";
 
-import Contest from "@/abi/Contest.json";
+import TwitterAccountVerifier from "@/abi/TwitterAccountVerifier.json";
+import TwitterProver from "@/abi/TwitterProver.json";
+import { useAccount, useReadContract } from "wagmi";
+import { optimismSepolia } from "viem/chains";
 
 const webProofConfig: WebProofConfig<Abi, string> = {
   proverCallCommitment: {
@@ -20,7 +23,7 @@ const webProofConfig: WebProofConfig<Abi, string> = {
     proverAbi: [],
     functionName: "proveWeb",
     commitmentArgs: [],
-    chainId: 1,
+    chainId: optimismSepolia.id,
   },
   logoUrl: "http://twitterswap.com/logo.png",
   steps: [
@@ -59,28 +62,20 @@ export const useTwitterAccountProof = () => {
     error: webProofError,
   } = useWebProof(webProofConfig);
 
+  console.log(webProofError);
+
   if (webProofError) {
     throw new WebProofError(webProofError.message);
   }
-
-  const { chain, error: chainError } = useChain(
-    process.env.NEXT_PUBLIC_CHAIN_NAME
-  );
-
-  useEffect(() => {
-    if (chainError) {
-      setError(new UseChainError(chainError));
-    }
-  }, [chainError]);
 
   const vlayerProverConfig: Omit<
     ProveArgs<Abi, ContractFunctionName<Abi>>,
     "args"
   > = {
-    address: process.env.NEXT_PUBLIC_PROVER_URL as Address,
-    proverAbi: Contest.abi as Abi,
-    chainId: chain?.id,
-    functionName: "main", // FIXME:
+    address: process.env.NEXT_PUBLIC_TWITTER_PROVER_URL as Address,
+    proverAbi: TwitterProver.abi as Abi,
+    chainId: 11155420,
+    functionName: "proofOfAccount",
   };
 
   const {
@@ -134,4 +129,18 @@ export const useTwitterAccountProof = () => {
     result,
     error,
   };
+};
+
+export const useTwitterAccountVerified = () => {
+  const { address: userAddress } = useAccount();
+
+  return useReadContract({
+    address: getAddress(process.env.NEXT_PUBLIC_TWITTER_VERIFIER_URL!),
+    abi: TwitterAccountVerifier.abi,
+    functionName: "isVerified",
+    args: [userAddress],
+    query: {
+      enabled: !!userAddress,
+    },
+  });
 };

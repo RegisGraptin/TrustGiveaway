@@ -3,12 +3,17 @@ import { useEffect, useState } from "react";
 import { TwitterIcon } from "../icon/TwitterIcon";
 import { CalendarIcon } from "../icon/CalendarIcon";
 import { UsersIcon } from "../icon/UsersIcon";
-import { useTwitterAccountProof } from "@/hooks/useTwitterAccountProof";
 import { useTwitterPostProof } from "@/hooks/useTwitterPostProof";
+import { useAccount } from "wagmi";
 
-export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
-  // Read contest data
-
+export const ContestCard = ({
+  contestAddress,
+  joinEnable,
+}: {
+  contestAddress: string;
+  joinEnable: boolean;
+}) => {
+  const { address: userAddress } = useAccount();
   const { data: contestModel } = useContestDetail(contestAddress);
 
   const contest = {
@@ -31,15 +36,10 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
     isCallProverIdle,
     result,
     error,
-  } = useTwitterPostProof(
-    "https://x.com/ethbelgrade/status/1928732641588633898"
-  );
-  // } = useTwitterAccountProof();
+  } = useTwitterPostProof(contestModel.twitterStatusId || "");
 
   const joinContest = () => {
-    console.log("joinContest");
-
-    // FIXME: Maybe provide a single smart contract for twitter verification?
+    console.log("Join contest");
     requestWebProof();
   };
 
@@ -174,7 +174,8 @@ export const ContestCard = ({ contestAddress }: { contestAddress: string }) => {
               <div className="mt-auto space-y-3">
                 <button
                   onClick={joinContest}
-                  className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800"
+                  disabled={!joinEnable}
+                  className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
                   <TwitterIcon className="h-4 w-4 mr-2" />
                   Participate Now

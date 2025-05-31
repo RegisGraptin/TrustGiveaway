@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 
+import "forge-std/console.sol";
+
 import {TwitterProver} from "../contracts/proof/TwitterProver.sol";
 import {TwitterAccountVerifier} from "../contracts/proof/TwitterAccountVerifier.sol";
 
@@ -35,6 +37,16 @@ contract ContestFactoryScript is Script {
             pythContractAddress
         );
 
+        console.log("ContestFactory deployed at:");
+        console.logAddress(address(factory));
+
+        console.log("TwitterProver deployed at:");
+        console.logAddress(address(twitterProver));
+
+        console.log("TwitterAccountVerifier deployed at:");
+        console.logAddress(address(twitterAccountVerifier));
+
         vm.stopBroadcast();
+
     }
 }

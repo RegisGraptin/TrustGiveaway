@@ -19,7 +19,8 @@ contract TwitterProver is Prover {
         view
         returns (Proof memory, string memory)
     {
-        Web memory web = webProof.verify(twitterAccountUrl);
+        // FIXME: Chck new function name!
+        Web memory web = webProof.verifyWithUrlPrefix(twitterAccountUrl);
 
         string memory screenName = web.jsonGetString("screen_name");
 
