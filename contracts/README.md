@@ -16,7 +16,7 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 
 
 ```bash
-npx hardhat run scripts/deploy.ts --network optimismSepolia
+npx hardhat run ./scripts/deployContestFactory.ts --network optimismSepolia
 npx hardhat run scripts/interact.ts --network optimismSepolia
 ```
 

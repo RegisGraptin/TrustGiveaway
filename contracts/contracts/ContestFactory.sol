@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import {TwitterAccountProver} from "./TwitterAccountProver.sol";
+import {TwitterProver} from "./proof/TwitterProver.sol";
+import {TwiterAccountVerifier} from "./proof/TwiterAccountVerifier.sol";
 
 import "./Contest.sol";
 
 contract ContestFactory {
+
+    TwitterProver twitterProver;
+    TwiterAccountVerifier twitterAccountVerifier;
 
     mapping(uint256 _contestId => address _contestAddress) public contestAddress;
 
@@ -15,8 +19,6 @@ contract ContestFactory {
     address pythContract;
     address entropyProvider;
 
-    address twitterAccountProver;
-
     constructor(
         address _entropyAddress,
         address _pythContract
@@ -25,7 +27,8 @@ contract ContestFactory {
         pythContract = _pythContract;
 
         // Deployed new Twitter Account Verifier
-        twitterAccountProver = address(new TwitterAccountProver());
+        twitterProver = new TwitterProver();
+        twitterAccountVerifier = new TwiterAccountVerifier(address(twitterProver));
     }
 
     function createNewContest(
@@ -36,7 +39,6 @@ contract ContestFactory {
         
         // Create a new Contest and save the address 
         Contest _contest = new Contest(
-            twitterAccountProver,
             entropyAddress,
             pythContract,
             msg.sender,
@@ -47,6 +49,11 @@ contract ContestFactory {
         contestAddress[contestId] = address(_contest);
 
         contestId++;
+    }
+
+    /// @notice Verify that the twitter account is verified
+    function isTwitterAccountVerified(address account) external returns (bool) {
+        return twitterAccountVerifier.isVerified(account);
     }
 
 }

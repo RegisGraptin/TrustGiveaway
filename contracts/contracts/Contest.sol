@@ -8,13 +8,16 @@ import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 
-import {TwitterAccountProver} from "./TwitterAccountProver.sol";
+import {TwitterProver} from "./proof/TwitterProver.sol";
 import {Proof} from "vlayer-0.1.0/Proof.sol";
 import {Verifier} from "vlayer-0.1.0/Verifier.sol";
 
+import {ContestFactory} from "./ContestFactory.sol";
+
 contract Contest is Ownable, Verifier, IEntropyConsumer {
 
-    address public twitterAccountProver;
+    address contestFactoryAddress;
+
 
     IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
@@ -26,6 +29,7 @@ contract Contest is Ownable, Verifier, IEntropyConsumer {
     uint256 public endTimeContest;
     uint256 public numberOfParticipants;
     uint256 winningNumber;
+
 
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
@@ -47,7 +51,6 @@ contract Contest is Ownable, Verifier, IEntropyConsumer {
     event PriceUpdated(int64 price, uint64 confidence, uint256 publishTime);
 
     constructor(
-        address _twitterAccountProver,
         address entropyAddress,
         address pythContract,
         address _owner,
@@ -55,7 +58,9 @@ contract Contest is Ownable, Verifier, IEntropyConsumer {
         string memory _description,
         uint256 _endTimeContest
     ) Ownable(_owner) {
-        twitterAccountProver = _twitterAccountProver;
+        // Save the factory address contract
+        contestFactoryAddress = msg.sender;
+
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
         
@@ -102,11 +107,16 @@ contract Contest is Ownable, Verifier, IEntropyConsumer {
 
     // 3.0: Registry part
 
+    function joinContest() external {
+        // Twitter handle should be verified
+        require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "NOT_VERIFIER");
+        uint256 a = 1;  // FIXME:
+    }
+
     /// @notice register to a contest
-    function register(Proof calldata, string memory handle)
-        public
-        onlyVerified(twitterAccountProver, TwitterAccountProver.main.selector)
-    {
+    function register(string memory handle) public {
+        // FIXME: add verifier for the post
+        require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "not_verified");
         require(block.timestamp <= endTimeContest, "Contest has ended");
 
         bytes32 convertedHandle = keccak256(abi.encodePacked(handle));
