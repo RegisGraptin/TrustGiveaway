@@ -12,7 +12,7 @@ async function main() {
   await twitterProver.waitForDeployment();
 
   const TwitterAccountVerifier = await ethers.getContractFactory("TwitterAccountVerifier");
-  const twitterAccountVerifier = await TwitterAccountVerifier.deploy(twitterProver.address);
+  const twitterAccountVerifier = await TwitterAccountVerifier.deploy("" + twitterProver.address);
   await twitterAccountVerifier.waitForDeployment();
 
 
