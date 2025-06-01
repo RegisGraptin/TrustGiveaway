@@ -38,11 +38,8 @@ async function main() {
   const fee = await pyth.getUpdateFee([priceUpdate]);
   console.log("💰 Update fee:", formatEther(fee), "ETH");
 
-  const updateTx = await Contest.getETHPriceForUSD([priceUpdate], { value: fee });
+  const updateTx = await Contest.updateETHPrice([priceUpdate], { value: fee });
   const updateReceipt = await updateTx.wait();
-
-  console.log("Transaction status:", updateReceipt.status);
-  console.log("Number of logs:", updateReceipt.logs.length);
 
   // Manually compute event topic hash
   const eventSignature = "PriceUpdated(int64,uint64,uint256)";
@@ -56,27 +53,22 @@ async function main() {
 
   // Filter logs by event topic
   const priceUpdatedLogs = updateReceipt.logs.filter(
-    (log:any) => log.topics[0] === priceUpdatedEventSig
+    (log: any) => log.topics[0] === priceUpdatedEventSig
   );
 
-  if (priceUpdatedLogs.length === 0) {
-    console.error("❌ No PriceUpdated events found");
-  } else {
-    console.log(`✅ Found ${priceUpdatedLogs.length} PriceUpdated event(s):`);
-
-    for (const log of priceUpdatedLogs) {
-      try {
-        const parsed = iface.parseLog(log);
-        const [price, confidence, publishTime] = parsed.args;
-        console.log(
-          `📈 Price: ${price.toString()}, Confidence: ${confidence.toString()}, Published At: ${publishTime.toString()}`
-        );
-      } catch (error) {
-        console.error("⚠️ Failed to parse log:", error);
-      }
+  for (const log of priceUpdatedLogs) {
+    try {
+      const parsed = iface.parseLog(log);
+      const [price, confidence, publishTime] = parsed.args;
+      console.log(
+        `📈 Price: ${price.toString()}, Confidence: ${confidence.toString()}, Published At: ${publishTime.toString()}`
+      );
+    } catch (error) {
+      console.error("⚠️ Failed to parse log:", error);
     }
   }
 }
+
 
 main().catch((err) => {
   console.error(err);

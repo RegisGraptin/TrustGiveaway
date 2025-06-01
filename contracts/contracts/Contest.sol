@@ -15,7 +15,6 @@ import {Verifier} from "vlayer-0.1.0/Verifier.sol";
 import {ContestFactory} from "./ContestFactory.sol";
 
 contract Contest is Ownable, IEntropyConsumer {
-
     address contestFactoryAddress;
 
     IPyth pyth; // Pyth Pricefeeds
@@ -28,7 +27,11 @@ contract Contest is Ownable, IEntropyConsumer {
     uint256 public endTimeContest;
     uint256 public numberOfParticipants;
     uint256 winningNumber;
-    // address entropyProvider;
+
+    //Pyth PriceFeeds storage
+    int256 public lastPrice;
+    uint256 public lastConf;
+    uint256 public lastPublishTime;
 
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
@@ -62,7 +65,7 @@ contract Contest is Ownable, IEntropyConsumer {
 
         entropy = IEntropy(entropyAddress);
         pyth = IPyth(pythContract);
-        
+
         // Save contest metadata
         twitterStatusId = _twitterStatusId;
         description = _description;
@@ -70,11 +73,9 @@ contract Contest is Ownable, IEntropyConsumer {
         endTimeContest = _endTimeContest;
     }
 
-    
-
     // 2.0 Pyth Price Feeds part
 
-    function getETHPriceForUSD(bytes[] calldata priceUpdate) public payable {
+    function updateETHPrice(bytes[] calldata priceUpdate) public payable {
         uint fee = pyth.getUpdateFee(priceUpdate);
         pyth.updatePriceFeeds{value: fee}(priceUpdate);
 
@@ -83,7 +84,21 @@ contract Contest is Ownable, IEntropyConsumer {
             priceFeedId,
             60
         );
+
+        // Save the price info in contract storage
+        lastPrice = price.price;
+        lastConf = price.conf;
+        lastPublishTime = price.publishTime;
+
         emit PriceUpdated(price.price, price.conf, price.publishTime);
+    }
+
+    function getLastETHPrice()
+        public
+        view
+        returns (int256 price, uint256 conf, uint256 publishTime)
+    {
+        return (lastPrice, lastConf, lastPublishTime);
     }
 
     // FIXME: TODO: When creating a contest, we need to create a price in ETH
@@ -94,8 +109,13 @@ contract Contest is Ownable, IEntropyConsumer {
 
     function joinContest() external {
         // Twitter handle should be verified
-        require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "NOT_VERIFIER");
-        uint256 a = 1;  // FIXME:
+        require(
+            ContestFactory(contestFactoryAddress).isTwitterAccountVerified(
+                msg.sender
+            ),
+            "NOT_VERIFIER"
+        );
+        uint256 a = 1; // FIXME:
     }
 
     /// @notice register to a contest
@@ -110,7 +130,6 @@ contract Contest is Ownable, IEntropyConsumer {
             "Handle already registered"
         );
 
-
         Registry memory newRegistry = Registry({
             id: numberOfParticipants,
             registryAddress: msg.sender,
@@ -122,6 +141,7 @@ contract Contest is Ownable, IEntropyConsumer {
         alreadyRegistered[convertedHandle] = true;
         hasUserParticipated[msg.sender] = true;
     }
+
     function endContest(bytes32 userRandomNumber) public payable {
         require(block.timestamp >= endTimeContest, "contest is still ongoing");
         // For future version, we need a way for the owner to claim back the price,
@@ -139,17 +159,18 @@ contract Contest is Ownable, IEntropyConsumer {
         );
     }
 
-  function requestRandomNumber(bytes32 userRandomNumber) external payable {
-    // Get the default provider and the fee for the request
-    address entropyProvider = entropy.getDefaultProvider();
-    uint256 fee = entropy.getFee(entropyProvider);
- 
-    // Request the random number with the callback
-    entropy.requestWithCallback{ value: fee }(
-      entropyProvider,
-      userRandomNumber
-    );
-  }
+    function requestRandomNumber(bytes32 userRandomNumber) external payable {
+        // Get the default provider and the fee for the request
+        address entropyProvider = entropy.getDefaultProvider();
+        uint256 fee = entropy.getFee(entropyProvider);
+
+        // Request the random number with the callback
+        entropy.requestWithCallback{value: fee}(
+            entropyProvider,
+            userRandomNumber
+        );
+    }
+
     /// @notice only winner can call it
     function claim() public {
         require(
@@ -158,7 +179,6 @@ contract Contest is Ownable, IEntropyConsumer {
         );
 
         // TODO: Sending the ERC20 token to the winner
-
     }
 
     function getRegistries() public view returns (Registry[] memory) {
@@ -172,11 +192,10 @@ contract Contest is Ownable, IEntropyConsumer {
         return registries[winningNumber - 1];
     }
 
-
     ///
     /// Pyth Randomness functions
     ///
-    
+
     /// @notice Entropy callback - Defined the winner of the contest
     function entropyCallback(
         uint64 /* sequenceNumber */,
