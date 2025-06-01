@@ -27,10 +27,10 @@ contract TwitterProver is Prover {
         return (proof(), screenName);
     }
 
-    function proofOfPost(WebProof calldata webProof, address account)
+    function proofOfPost(WebProof calldata webProof)
         public
         view
-        returns (Proof memory, string memory, address)
+        returns (Proof memory, string memory)
     {
         Web memory web = webProof.verifyWithUrlPrefix(twitterAccountUrl);
         string memory screenName = web.jsonGetString("data.threaded_conversation_with_injections_v2.instructions.entries[1].content.items.item.itemContent.tweet_results.result.core.user_results.result.core.screen_name");

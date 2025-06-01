@@ -11,7 +11,7 @@ import { Abi, Address, ContractFunctionName } from "viem";
 import { startPage, expectUrl, notarize } from "@vlayer/sdk/web_proof";
 import { UseChainError, WebProofError } from "../errors";
 
-import Contest from "@/abi/Contest.json";
+import TwitterProver from "@/abi/TwitterProver.json";
 
 export const useTwitterPostProof = (url: string) => {
   const match = url.match(/\/status\/(\d+)$/);
@@ -77,10 +77,10 @@ export const useTwitterPostProof = (url: string) => {
     ProveArgs<Abi, ContractFunctionName<Abi>>,
     "args"
   > = {
-    address: process.env.NEXT_PUBLIC_PROVER_URL as Address, // FIXME: understand this paramter
-    proverAbi: Contest.abi as Abi,
-    chainId: chain?.id,
-    functionName: "joinContest", // //FIXME:
+    address: process.env.NEXT_PUBLIC_TWITTER_PROVER_URL as Address,
+    proverAbi: TwitterProver.abi as Abi,
+    chainId: 11155420,
+    functionName: "proofOfPost",
   };
 
   const {
@@ -111,9 +111,6 @@ export const useTwitterPostProof = (url: string) => {
   useEffect(() => {
     if (webProof) {
       setWebProof(JSON.stringify(webProof));
-
-      console.log("webProof");
-      console.log(webProof);
     }
   }, [JSON.stringify(webProof)]);
 

@@ -15,6 +15,7 @@ import {
 } from "@/hooks/useTwitterAccountProof";
 import TwitterAccountVerifier from "@/abi/TwitterAccountVerifier.json";
 import { getAddress } from "viem";
+import { ProofProvider } from "@vlayer/react";
 
 export default function TwitterVerification() {
   const {
@@ -73,30 +74,38 @@ export default function TwitterVerification() {
   }, [isTxConfirmed]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-6 max-w-2xl mx-auto"
+    <ProofProvider
+      config={{
+        proverUrl: process.env.NEXT_PUBLIC_PROVER_URL,
+        wsProxyUrl: process.env.NEXT_PUBLIC_WS_PROXY_URL,
+        notaryUrl: process.env.NEXT_PUBLIC_NOTARY_URL,
+        token: process.env.NEXT_PUBLIC_VLAYER_API_TOKEN,
+      }}
     >
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <div className="bg-blue-100 p-3 rounded-full">
-            <TwitterIcon className="h-10 w-10 text-blue-500" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 max-w-2xl mx-auto"
+      >
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="bg-blue-100 p-3 rounded-full">
+              <TwitterIcon className="h-10 w-10 text-blue-500" />
+            </div>
           </div>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Twitter Account Verification
+          </h2>
+          <p className="mt-2 text-gray-600">
+            Verify your Twitter ownership using zero-knowledge proofs
+          </p>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">
-          Twitter Account Verification
-        </h2>
-        <p className="mt-2 text-gray-600">
-          Verify your Twitter ownership using zero-knowledge proofs
-        </p>
-      </div>
 
-      <div className="space-y-6 bg-white p-6">
-        {!isTwitterAccountVerified && (
-          <div className="space-y-4">
-            <div>
-              {/* <label className="block text-lg font-medium text-gray-900 mb-2">
+        <div className="space-y-6 bg-white p-6">
+          {!isTwitterAccountVerified && (
+            <div className="space-y-4">
+              <div>
+                {/* <label className="block text-lg font-medium text-gray-900 mb-2">
                 Twitter Handle
               </label>
               <div className="flex">
@@ -116,47 +125,48 @@ export default function TwitterVerification() {
               <p className="mt-2 text-sm text-gray-600">
                 Enter your Twitter username without the @ symbol
               </p> */}
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
-                <p className="text-red-700 font-medium">{error.message}</p>
               </div>
-            )}
 
-            <button
-              onClick={verifyTwitterAccount}
-              disabled={isPendingProof}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200"
-            >
-              Verify Twitter Account
-            </button>
-          </div>
-        )}
+              {error && (
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                  <p className="text-red-700 font-medium">{error.message}</p>
+                </div>
+              )}
 
-        {(isTwitterAccountVerified as boolean) && (
-          <div className="text-center py-8">
-            <div className="flex justify-center">
-              <svg
-                className="h-16 w-16 text-green-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <button
+                onClick={verifyTwitterAccount}
+                disabled={isPendingProof}
+                className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+                Verify Twitter Account
+              </button>
             </div>
-            <h3 className="mt-4 text-xl font-medium text-gray-900">
-              Verification Successful!
-            </h3>
-          </div>
-        )}
-      </div>
-    </motion.div>
+          )}
+
+          {(isTwitterAccountVerified as boolean) && (
+            <div className="text-center py-8">
+              <div className="flex justify-center">
+                <svg
+                  className="h-16 w-16 text-green-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h3 className="mt-4 text-xl font-medium text-gray-900">
+                Verification Successful!
+              </h3>
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </ProofProvider>
   );
 }
