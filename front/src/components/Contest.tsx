@@ -61,7 +61,11 @@ export default function Contest() {
 
             {/* {activeTab === "participated" && <ParticipatedContest />} */}
 
-            {activeTab === "create" && <CreateContest />}
+            {activeTab === "create" && (
+              <CreateContest
+                onContestCreated={() => setActiveTab("all-contests")}
+              />
+            )}
 
             {activeTab === "account" && (
               <ProofProvider
