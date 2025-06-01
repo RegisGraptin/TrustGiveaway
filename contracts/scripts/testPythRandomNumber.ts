@@ -1,8 +1,11 @@
 import { ethers } from "hardhat";
-import { encodeBytes32String, Contract } from "ethers";
+import { encodeBytes32String, Contract, JsonRpcProvider, ContractRunner } from "ethers";
 import fs from "fs";
 
 
+function toContractRunner(signer: any): ContractRunner {
+  return signer as ContractRunner;
+}
 
 // ABI fragment for IEntropy with getFee method
 const entropyAbi = [
@@ -34,7 +37,7 @@ async function main() {
   const { contestFactory } = JSON.parse(fs.readFileSync("./deployed.json", "utf-8"));
 
   const entropyProvider = "0x6CC14824Ea2918f5De5C2f75A9Da968ad4BD6344"; // default EntropyProvider
-  const Factory = await ethers.getContractAt("ContestFactory", contestFactory, owner);
+  const Factory = await ethers.getContractAt("ContestFactory", contestFactory);
 
   console.log("Creating contest from factory...");
   const tx = await Factory.createNewContest(
@@ -46,7 +49,7 @@ async function main() {
 
   const contestId = await Factory.contestId();
   // ethers v6 uses subtract instead of sub
-  const newContestAddress = await Factory.contestAddress(contestId.subtract(1)); // latest contest
+  const newContestAddress = await Factory.contestAddress(contestId - 1n);
 
   console.log("🎯 New Contest deployed at:", newContestAddress);
 
@@ -56,12 +59,21 @@ async function main() {
   const handles = ["alice123", "bob456", "charlie789"];
   const signers = [account2, account3, account4];
 
-  for (let i = 0; i < signers.length; i++) {
-    const registerTx = await Contest.connect(signers[i]).register(handles[i]);
-    await registerTx.wait();
-    console.log(`Registered ${handles[i]} from ${signers[i].address}`);
-  }
+  console.log("signers length:", signers.length);
+  signers.forEach((s, i) => console.log(`Signer ${i}: ${s.address}`));
 
+  // now you can safely loop
+  for (let i = 0; i < signers.length; i++) {
+    const provider = ethers.provider; // from Hardhat environment
+    const signerWithProvider = signers[i].connect(provider);
+
+    // Assuming Contest is already instantiated
+    const contestWithSigner = Contest.connect(signerWithProvider);
+    console.log(`Registering handle '${handles[i]}' from signer ${signers[i].address}...`);
+    const regTx = await contestWithSigner.register(handles[i]);
+    await regTx.wait();
+    console.log(`Registered '${handles[i]}' successfully.`);
+  }
   // Wait for 20 seconds before ending the contest
   console.log("⏳ Waiting 20 seconds before contest finishes...");
   await delay(20_000); // 20 seconds
