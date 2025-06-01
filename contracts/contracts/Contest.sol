@@ -3,6 +3,9 @@ pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
 import {IEntropyConsumer} from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 
@@ -75,8 +78,6 @@ contract Contest is Ownable, IEntropyConsumer {
         endTimeContest = _endTimeContest;
     }
 
-    // 2.0 Pyth Price Feeds part
-
     function updateETHPrice(bytes[] calldata priceUpdate) public payable {
         uint fee = pyth.getUpdateFee(priceUpdate);
         pyth.updatePriceFeeds{value: fee}(priceUpdate);
@@ -103,13 +104,7 @@ contract Contest is Ownable, IEntropyConsumer {
         return (lastPrice, lastConf, lastPublishTime);
     }
 
-    // FIXME: TODO: When creating a contest, we need to create a price in ETH
-    // Then, the idea will be to convert the ETH price to USD for the user
-    // This is how we can use pyth network price feed!
-
-    // 3.0: Registry part
-
-    function joinContest() external {
+    function joinContest(string memory handle) external {
         // Twitter handle should be verified
         require(
             ContestFactory(contestFactoryAddress).isTwitterAccountVerified(
@@ -117,10 +112,10 @@ contract Contest is Ownable, IEntropyConsumer {
             ),
             "NOT_VERIFIER"
         );
-        uint256 a = 1; // FIXME:
+        register(handle);
     }
 
-    /// @notice register to a contest
+    /// @notice register to a contest - test randomness purpose only
     function register(string memory handle) public {
         // require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "not_verified");
         require(block.timestamp <= endTimeContest, "Contest has ended");
@@ -162,18 +157,6 @@ contract Contest is Ownable, IEntropyConsumer {
         );
     }
 
-    function requestRandomNumber(bytes32 userRandomNumber) external payable {
-        // Get the default provider and the fee for the request
-        address entropyProvider = entropy.getDefaultProvider();
-        uint256 fee = entropy.getFee(entropyProvider);
-
-        // Request the random number with the callback
-        entropy.requestWithCallback{value: fee}(
-            entropyProvider,
-            userRandomNumber
-        );
-    }
-
     /// @notice only winner can call it
     function claim() public {
         require(
@@ -181,7 +164,9 @@ contract Contest is Ownable, IEntropyConsumer {
             "You are not the winner of this content"
         );
 
-        // TODO: Sending the ERC20 token to the winner
+        // Send to the winner all the prize
+        IERC20 token = IERC20(ContestFactory(contestFactoryAddress).myToken());
+        token.transfer(msg.sender, token.balanceOf(address(this)));        
     }
 
     function getRegistries() public view returns (Registry[] memory) {
@@ -201,8 +186,8 @@ contract Contest is Ownable, IEntropyConsumer {
 
     /// @notice Entropy callback - Defined the winner of the contest
     function entropyCallback(
-        uint64 sequenceNumber,
-        address provider,
+        uint64 /* sequenceNumber */,
+        address /* provider */,
         bytes32 randomNumber
     ) internal override {
         uint256 rawRandom = uint256(randomNumber);

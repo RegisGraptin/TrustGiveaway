@@ -9,9 +9,11 @@ import {TwitterProver} from "../contracts/proof/TwitterProver.sol";
 import {TwitterAccountVerifier} from "../contracts/proof/TwitterAccountVerifier.sol";
 
 import {ContestFactory} from "../contracts/ContestFactory.sol";
+import {MyToken} from "../contracts/MockERC20.sol";
 
 contract ContestFactoryScript is Script {
     
+    MyToken myToken;
     TwitterProver twitterProver;
     TwitterAccountVerifier twitterAccountVerifier;
 
@@ -21,6 +23,13 @@ contract ContestFactoryScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
+        myToken = new MyToken(
+            address(1),
+            "Wrapped ETH",
+            "WETH",
+            18
+        );
+        
         // Create prover
         twitterProver = new TwitterProver();
         twitterAccountVerifier = new TwitterAccountVerifier(address(twitterProver));
@@ -34,7 +43,8 @@ contract ContestFactoryScript is Script {
             address(twitterProver),
             address(twitterAccountVerifier),
             entropyAddress,
-            pythContractAddress
+            pythContractAddress,
+            address(myToken)
         );
 
         console.log("ContestFactory deployed at:");
