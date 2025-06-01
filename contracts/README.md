@@ -29,7 +29,7 @@ npx hardhat run scripts/testingPythPriceFeeds.ts --network optimism-sepolia
 npx hardhat verify --network optimism-sepolia contestFactoryAddress _twitterAccountVerifierAddress _twitterProverAddress _entropyAddress _pythContract _myTokenAddress
 ```
 
-## We also have an automatic verification script written in deployContestFactory.ts from line 53 to line 76
+We also have an automatic verification script written in deployContestFactory.ts from line 53 to line 76
 
 ## You can find a verified smartcontract on Blockscout on this link:
 
