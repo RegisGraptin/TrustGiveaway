@@ -60,7 +60,7 @@ export function AllContest() {
                 <ContestCard
                   key={index}
                   contestAddress={contestResult.result as string}
-                  joinEnable={isTwitterAccountVerified}
+                  joinEnable={isTwitterAccountVerified as boolean}
                 />
               ))}
           </div>
