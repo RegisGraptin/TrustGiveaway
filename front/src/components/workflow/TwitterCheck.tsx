@@ -15,8 +15,12 @@ import {
 } from "@/hooks/useTwitterAccountProof";
 import TwitterAccountVerifier from "@/abi/TwitterAccountVerifier.json";
 import { getAddress } from "viem";
+import { optimismSepolia } from "viem/chains";
+import { useNotification } from "@blockscout/app-sdk";
 
 export default function TwitterVerification() {
+  const { openTxToast } = useNotification();
+
   const {
     data: isTwitterAccountVerified,
     refetch: refetchTwitterAccountVerified,
@@ -30,6 +34,12 @@ export default function TwitterVerification() {
   } = useWriteContract();
 
   const { isSuccess: isTxConfirmed } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (hash) {
+      openTxToast(optimismSepolia.id.toString(), hash);
+    }
+  }, [hash]);
 
   const {
     requestWebProof,
