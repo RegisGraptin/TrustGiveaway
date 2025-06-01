@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 import {IEntropyConsumer} from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import {IEntropy} from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
+
 import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
 import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
 
@@ -33,10 +34,11 @@ contract Contest is Ownable, IEntropyConsumer {
     uint256 public lastConf;
     uint256 public lastPublishTime;
 
-    // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
-    // Pyth Price Feeds contract address for OP Sepolia: 	0x0708325268dF9F66270F1401206434524814508b
+    // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
+
     // Link for PriceFeeds contracts: https://docs.pyth.network/price-feeds/contract-addresses/evm
+    // Pyth Price Feeds contract address for OP Sepolia: 	0x0708325268dF9F66270F1401206434524814508b
 
     struct Registry {
         uint256 id;
@@ -120,7 +122,6 @@ contract Contest is Ownable, IEntropyConsumer {
 
     /// @notice register to a contest
     function register(string memory handle) public {
-        // FIXME: add verifier for the post
         // require(ContestFactory(contestFactoryAddress).isTwitterAccountVerified(msg.sender), "not_verified");
         require(block.timestamp <= endTimeContest, "Contest has ended");
 
@@ -148,12 +149,14 @@ contract Contest is Ownable, IEntropyConsumer {
         // else the fund will be locked if no one participate.
         require(numberOfParticipants > 0, "No participants registered");
         address entropyProvider = entropy.getDefaultProvider();
-        // random Number generation
-        uint256 fee = entropy.getFee(entropyProvider);
+
+        // Random Number generation
+        uint256 requestFee = entropy.getFee(entropyProvider);
+        if (msg.value < requestFee) revert("not enough fees");
 
         // Request the random number with the callback
         // No need to store the sequence number in our case
-        entropy.requestWithCallback{value: fee}(
+        entropy.requestWithCallback{value: requestFee}(
             entropyProvider,
             userRandomNumber
         );
@@ -198,13 +201,13 @@ contract Contest is Ownable, IEntropyConsumer {
 
     /// @notice Entropy callback - Defined the winner of the contest
     function entropyCallback(
-        uint64 /* sequenceNumber */,
-        address /* provider */,
+        uint64 sequenceNumber,
+        address provider,
         bytes32 randomNumber
     ) internal override {
         uint256 rawRandom = uint256(randomNumber);
         winningNumber = (rawRandom % numberOfParticipants);
-        emit WinnerChosen(winningNumber);
+        emit WinnerChosen(1);
     }
 
     // It returns the address of the entropy contract which will call the callback.
@@ -212,11 +215,8 @@ contract Contest is Ownable, IEntropyConsumer {
         return address(entropy);
     }
 
-    function getEntropyFee(address provider) public view returns (uint256) {
-        return entropy.getFee(provider);
+    function getEntropyFee() public view returns (uint256) {
+        return entropy.getFee(entropy.getDefaultProvider());
     }
 
-    function getEntropyProvider() public view returns (address) {
-        return entropy.getDefaultProvider();
-    }
 }
