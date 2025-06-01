@@ -9,9 +9,11 @@ import {TwitterProver} from "../contracts/proof/TwitterProver.sol";
 import {TwitterAccountVerifier} from "../contracts/proof/TwitterAccountVerifier.sol";
 
 import {ContestFactory} from "../contracts/ContestFactory.sol";
+import {MyToken} from "../contracts/MockERC20.sol";
 
 contract ContestFactoryScript is Script {
     
+    MyToken myToken;
     TwitterProver twitterProver;
     TwitterAccountVerifier twitterAccountVerifier;
 
@@ -21,6 +23,13 @@ contract ContestFactoryScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
+        myToken = new MyToken(
+            address(1),
+            "Wrapped ETH",
+            "WETH",
+            18
+        );
+        
         // Create prover
         twitterProver = new TwitterProver();
         twitterAccountVerifier = new TwitterAccountVerifier(address(twitterProver));
@@ -34,17 +43,13 @@ contract ContestFactoryScript is Script {
             address(twitterProver),
             address(twitterAccountVerifier),
             entropyAddress,
-            pythContractAddress
+            pythContractAddress,
+            address(myToken)
         );
 
-        console.log("ContestFactory deployed at:");
-        console.logAddress(address(factory));
-
-        console.log("TwitterProver deployed at:");
-        console.logAddress(address(twitterProver));
-
-        console.log("TwitterAccountVerifier deployed at:");
-        console.logAddress(address(twitterAccountVerifier));
+        console.log("NEXT_PUBLIC_CONTEST_FACTORY_ADDRESS=", address(factory));
+        console.log("NEXT_PUBLIC_TWITTER_PROVER_URL=", address(twitterProver));
+        console.log("NEXT_PUBLIC_TWITTER_VERIFIER_URL=", address(twitterAccountVerifier));
 
         vm.stopBroadcast();
 
