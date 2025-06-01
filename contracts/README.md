@@ -15,9 +15,18 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ## Deploy on Optimism 
 
 
+This script deploys the constestFactory contract
 ```bash
-npx hardhat run scripts/deployContestFactory.ts --network optimism-sepolia 
+npx hardhat run scripts/deployContestFactory.ts --network optimism-sepolia
+```
+
+With this script you can get a randomNumber with PythEntropy Provider
+```bash
 npx hardhat run scripts/testPythRandomNumber.ts --network optimism-sepolia
+```
+
+With this script you can update a Pricefeed (ETH/USD) in the Pyth Oracle then you will update the state in the smart contract with the newly given price value.
+```bash
 npx hardhat run scripts/testingPythPriceFeeds.ts --network optimism-sepolia
 ```
 
