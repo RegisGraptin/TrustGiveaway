@@ -75,15 +75,9 @@ contract Contest is Ownable, IEntropyConsumer {
     // 2.0 Pyth Price Feeds part
 
     function getETHPriceForUSD(bytes[] calldata priceUpdate) public payable {
-        // Submit a priceUpdate to the Pyth contract to update the on-chain price.
-        // Updating the price requires paying the fee returned by getUpdateFee.
-        // WARNING: These lines are required to ensure the getPriceNoOlderThan call below succeeds. If you remove them, transactions may fail with "0x19abf40e" error.
         uint fee = pyth.getUpdateFee(priceUpdate);
         pyth.updatePriceFeeds{value: fee}(priceUpdate);
 
-        // Read the current price from a price feed if it is less than 60 seconds old.
-        // Each price feed (e.g., ETH/USD) is identified by a price feed ID.
-        // The complete list of feed IDs is available at https://pyth.network/developers/price-feed-ids
         bytes32 priceFeedId = 0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace; // ETH/USD
         PythStructs.Price memory price = pyth.getPriceNoOlderThan(
             priceFeedId,

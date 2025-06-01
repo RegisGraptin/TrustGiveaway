@@ -1,5 +1,5 @@
 import { HermesClient } from "@pythnetwork/hermes-client";
-import { ethers } from "ethers";
+import { arrayify } from "@ethersproject/bytes";
 
 export async function getPythPriceUpdate(priceId: string): Promise<Uint8Array> {
   const hermes = new HermesClient("https://hermes.pyth.network");
@@ -12,7 +12,7 @@ export async function getPythPriceUpdate(priceId: string): Promise<Uint8Array> {
       throw new Error("No valid price update returned from Hermes for: " + priceId);
     }
 
-    return ethers.utils.arrayify("0x" + hexString); // Convert hex → bytes
+    return arrayify("0x" + hexString); // Convert hex → bytes
   } catch (error) {
     console.error("❌ Failed to fetch price update from Hermes:", error);
     throw error;

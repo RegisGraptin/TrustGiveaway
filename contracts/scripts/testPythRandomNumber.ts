@@ -33,11 +33,16 @@ async function waitForWinner(contract: Contract, maxRetries = 10, intervalMs = 5
 }
 
 async function main() {
-  const [owner, account2, account3, account4] = await ethers.getSigners();
+  const [owner] = await ethers.getSigners();
   const { contestFactory } = JSON.parse(fs.readFileSync("./deployed.json", "utf-8"));
 
   const entropyProvider = "0x6CC14824Ea2918f5De5C2f75A9Da968ad4BD6344"; // default EntropyProvider
   const Factory = await ethers.getContractAt("ContestFactory", contestFactory);
+
+    const provider = ethers.provider;
+
+  // connect owner signer explicitly to provider
+  const ownerWithProvider = owner.connect(provider);
 
   console.log("Creating contest from factory...");
   const tx = await Factory.createNewContest(
@@ -57,23 +62,15 @@ async function main() {
 
   // Proceed with original logic
   const handles = ["alice123", "bob456", "charlie789"];
-  const signers = [account2, account3, account4];
 
-  console.log("signers length:", signers.length);
-  signers.forEach((s, i) => console.log(`Signer ${i}: ${s.address}`));
-
-  // now you can safely loop
-  for (let i = 0; i < signers.length; i++) {
-    const provider = ethers.provider; // from Hardhat environment
-    const signerWithProvider = signers[i].connect(provider);
-
-    // Assuming Contest is already instantiated
-    const contestWithSigner = Contest.connect(signerWithProvider);
-    console.log(`Registering handle '${handles[i]}' from signer ${signers[i].address}...`);
-    const regTx = await contestWithSigner.register(handles[i]);
-    await regTx.wait();
-    console.log(`Registered '${handles[i]}' successfully.`);
+  for (const handle of handles) {
+    const contestWithOwner = Contest.connect(ownerWithProvider);
+    console.log(`Registering handle '${handle}' from owner ${owner.address}...`);
+    const tx = await contestWithOwner.register(handle);
+    await tx.wait();
+    console.log(`Registered '${handle}' successfully.`);
   }
+
   // Wait for 20 seconds before ending the contest
   console.log("⏳ Waiting 20 seconds before contest finishes...");
   await delay(20_000); // 20 seconds
@@ -85,6 +82,7 @@ async function main() {
   console.log("pythFee:", fee.toString());
 
   const endTx = await Contest.endContest(dummyEntropy, { value: fee });
+  console.log(endTx)
   await endTx.wait();
 
   console.log("Contest ended, waiting for winner...");
