@@ -21,7 +21,6 @@ import {ContestFactory} from "./ContestFactory.sol";
 contract Contest is Ownable, IEntropyConsumer {
     address contestFactoryAddress;
 
-    IPyth pyth; // Pyth Pricefeeds
     IEntropy entropy; // Pyth Entropy
 
     // Contest metadata
@@ -32,16 +31,8 @@ contract Contest is Ownable, IEntropyConsumer {
     uint256 public numberOfParticipants;
     uint256 winningNumber;
 
-    //Pyth PriceFeeds storage
-    int256 public lastPrice;
-    uint256 public lastConf;
-    uint256 public lastPublishTime;
-
     // Link to Entropy smart contracts: https://docs.pyth.network/entropy/contract-addresses
     // entropy Address in Optimism Sepolia: 0x4821932D0CDd71225A6d914706A621e0389D7061
-
-    // Link for PriceFeeds contracts: https://docs.pyth.network/price-feeds/contract-addresses/evm
-    // Pyth Price Feeds contract address for OP Sepolia: 	0x0708325268dF9F66270F1401206434524814508b
 
     struct Registry {
         uint256 id;
@@ -55,7 +46,6 @@ contract Contest is Ownable, IEntropyConsumer {
     mapping(address => bool) public hasUserParticipated;
 
     event WinnerChosen(uint256 winningNumber);
-    event PriceUpdated(int64 price, uint64 confidence, uint256 publishTime);
 
     constructor(
         address entropyAddress,
@@ -69,39 +59,12 @@ contract Contest is Ownable, IEntropyConsumer {
         contestFactoryAddress = msg.sender;
 
         entropy = IEntropy(entropyAddress);
-        pyth = IPyth(pythContract);
 
         // Save contest metadata
         twitterStatusId = _twitterStatusId;
         description = _description;
         startTimeContest = block.timestamp;
         endTimeContest = _endTimeContest;
-    }
-
-    function updateETHPrice(bytes[] calldata priceUpdate) public payable {
-        uint fee = pyth.getUpdateFee(priceUpdate);
-        pyth.updatePriceFeeds{value: fee}(priceUpdate);
-
-        bytes32 priceFeedId = 0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace; // ETH/USD
-        PythStructs.Price memory price = pyth.getPriceNoOlderThan(
-            priceFeedId,
-            60
-        );
-
-        // Save the price info in contract storage
-        lastPrice = price.price;
-        lastConf = price.conf;
-        lastPublishTime = price.publishTime;
-
-        emit PriceUpdated(price.price, price.conf, price.publishTime);
-    }
-
-    function getLastETHPrice()
-        public
-        view
-        returns (int256 price, uint256 conf, uint256 publishTime)
-    {
-        return (lastPrice, lastConf, lastPublishTime);
     }
 
     function joinContest(string memory handle) external {
@@ -192,7 +155,7 @@ contract Contest is Ownable, IEntropyConsumer {
     ) internal override {
         uint256 rawRandom = uint256(randomNumber);
         winningNumber = (rawRandom % numberOfParticipants);
-        emit WinnerChosen(1);
+        emit WinnerChosen(winningNumber);
     }
 
     // It returns the address of the entropy contract which will call the callback.
