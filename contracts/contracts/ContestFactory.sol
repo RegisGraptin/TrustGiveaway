@@ -2,11 +2,13 @@
 pragma solidity ^0.8.18;
 
 import {ITwitterAccountVerifier} from "./interfaces/ITwitterAccountVerifier.sol";
+import "./MockERC20.sol"; 
 
 import "./Contest.sol";
 
 contract ContestFactory {
 
+    MyToken public myToken; 
     // VLayer Verifier
     address public twitterProverAddress;
     address public twitterAccountVerifierAddress;
@@ -23,15 +25,16 @@ contract ContestFactory {
         address _twitterProverAddress,
         address _twitterAccountVerifierAddress,
         address _entropyAddress,
-        address _pythContract
-        // address _entropyProvider
+        address _pythContract,
+        address _myTokenAddress
     ) {
         twitterProverAddress = _twitterProverAddress;
         twitterAccountVerifierAddress = _twitterAccountVerifierAddress;
 
         entropyAddress = _entropyAddress;
         pythContract = _pythContract;
-        // entropyProvider = _entropyProvider;
+        
+        myToken = MyToken(_myTokenAddress);
     }
 
     function createNewContest(
@@ -50,6 +53,8 @@ contract ContestFactory {
             _endTimeContest
         );
         contestAddress[contestId] = address(_contest);
+
+        myToken.mint(address(_contest), 1 * 10 ** myToken.decimals());
 
         contestId++;
     }
