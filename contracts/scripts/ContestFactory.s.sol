@@ -47,14 +47,9 @@ contract ContestFactoryScript is Script {
             address(myToken)
         );
 
-        console.log("ContestFactory deployed at:");
-        console.logAddress(address(factory));
-
-        console.log("TwitterProver deployed at:");
-        console.logAddress(address(twitterProver));
-
-        console.log("TwitterAccountVerifier deployed at:");
-        console.logAddress(address(twitterAccountVerifier));
+        console.log("NEXT_PUBLIC_CONTEST_FACTORY_ADDRESS=", address(factory));
+        console.log("NEXT_PUBLIC_TWITTER_PROVER_URL=", address(twitterProver));
+        console.log("NEXT_PUBLIC_TWITTER_VERIFIER_URL=", address(twitterAccountVerifier));
 
         vm.stopBroadcast();
 
