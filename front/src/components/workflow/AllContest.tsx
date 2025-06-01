@@ -5,14 +5,47 @@ import { useContests, uselastContestId } from "@/hooks/contest";
 import { TwitterIcon } from "../icon/TwitterIcon";
 import { useTwitterAccountVerified } from "@/hooks/useTwitterAccountProof";
 import { ProofProvider } from "@vlayer/react";
+import { usePrice } from "@/hooks/token";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { getAddress } from "viem";
+import ContestFactory from "@/abi/ContestFactory.json";
 
 export function AllContest() {
   const { data: isTwitterAccountVerified } = useTwitterAccountVerified();
+
+  const { data: price } = usePrice();
+
+  console.log("price:", price);
 
   const { data: lastContestId } = uselastContestId();
   const { data: contestAddresses, isLoading } = useContests(
     lastContestId as bigint
   );
+
+  const {
+    writeContract,
+    data: txHash,
+    isPending,
+    error: errorContract,
+  } = useWriteContract();
+
+  const { isSuccess } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+
+  console.log(errorContract);
+
+  const refreshPrice = () => {
+    writeContract({
+      address: getAddress(process.env.NEXT_PUBLIC_CONTEST_FACTORY_ADDRESS!),
+      abi: ContestFactory.abi,
+      functionName: "updateETHPrice",
+      args: [
+        ["0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace"],
+      ],
+      value: BigInt(1e14),
+    });
+  };
 
   return (
     <ProofProvider
@@ -65,6 +98,15 @@ export function AllContest() {
               ))}
           </div>
         )}
+
+        {/* Add button to fetch price */}
+
+        <button
+          onClick={refreshPrice}
+          className="right-0 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Refresh
+        </button>
       </div>
     </ProofProvider>
   );
