@@ -21,17 +21,17 @@ npx hardhat run scripts/testPythRandomNumber.ts --network optimism-sepolia
 npx hardhat run scripts/testingPythPriceFeeds.ts --network optimism-sepolia
 ```
 
-## Blockscout Verification
+# Blockscout Verification
 
-# In order to verify on blockscout, you need to run the following command
+## In order to verify on blockscout, you need to run the following command
 
 ```bash
 npx hardhat verify --network optimism-sepolia contestFactoryAddress _twitterAccountVerifierAddress _twitterProverAddress _entropyAddress _pythContract _myTokenAddress
 ```
 
-# We also have an automatic verification script written in deployContestFactory.ts from line 53 to line 76
+## We also have an automatic verification script written in deployContestFactory.ts from line 53 to line 76
 
-# You can find a verified smartcontract on Blockscout on this link:
+## You can find a verified smartcontract on Blockscout on this link:
 
 https://optimism-sepolia.blockscout.com/address/0x124d572B215eA8156f395Cb2BD3bf9c617e2a998?tab=contract
 
