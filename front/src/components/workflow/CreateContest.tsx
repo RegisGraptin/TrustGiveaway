@@ -7,8 +7,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TwitterIcon } from "../icon/TwitterIcon";
 
 import ContestFactory from "@/abi/ContestFactory.json";
+import { useNotification } from "@blockscout/app-sdk";
+import { optimismSepolia } from "viem/chains";
 
-export default function CreateContest() {
+export default function CreateContest({
+  onContestCreated,
+}: {
+  onContestCreated: () => void;
+}) {
+  const { openTxToast } = useNotification();
+
   const {
     writeContract,
     data: txHash,
@@ -21,9 +29,15 @@ export default function CreateContest() {
   });
 
   useEffect(() => {
+    if (txHash) {
+      openTxToast(optimismSepolia.id.toString(), txHash);
+    }
+  }, [txHash]);
+
+  useEffect(() => {
     if (isSuccess) {
-      // FIXME: redirect?
       console.log("Finished");
+      onContestCreated();
     }
   }, [isSuccess]);
 
