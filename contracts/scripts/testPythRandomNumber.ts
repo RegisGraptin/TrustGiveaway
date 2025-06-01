@@ -72,16 +72,15 @@ async function main() {
   }
 
   // Wait for 20 seconds before ending the contest
-  console.log("⏳ Waiting 20 seconds before contest finishes...");
-  await delay(20_000); // 20 seconds
+  console.log("⏳ Waiting 25 seconds before contest finishes...");
+  await delay(25_000); // 20 seconds
 
-  const dummyEntropy = ethers.encodeBytes32String("random-seed");
+  const generatedSeed = ethers.encodeBytes32String("random-seed");
 
   console.log("Ending contest and requesting random number...");
-  const fee = await Contest.getEntropyFee(entropyProvider);
-  console.log("pythFee:", fee.toString());
+ 
 
-  const endTx = await Contest.endContest(dummyEntropy, { value: fee });
+  const endTx = await Contest.endContest(generatedSeed, { value: 150000000000000 });
   await endTx.wait();
 
   console.log("Contest ended, waiting for winner...");
