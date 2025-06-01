@@ -7,6 +7,7 @@ import { ParticipatedContest } from "./workflow/ParticipatedContest";
 import { MyContest } from "./workflow/MyContest";
 import { AllContest } from "./workflow/AllContest";
 import TwitterVerification from "./workflow/TwitterCheck";
+import { ProofProvider } from "@vlayer/react";
 
 export default function Contest() {
   const [activeTab, setActiveTab] = useState("all-contests");
@@ -62,7 +63,18 @@ export default function Contest() {
 
             {activeTab === "create" && <CreateContest />}
 
-            {activeTab === "account" && <TwitterVerification />}
+            {activeTab === "account" && (
+              <ProofProvider
+                config={{
+                  proverUrl: process.env.NEXT_PUBLIC_PROVER_URL,
+                  wsProxyUrl: process.env.NEXT_PUBLIC_WS_PROXY_URL,
+                  notaryUrl: process.env.NEXT_PUBLIC_NOTARY_URL,
+                  token: process.env.NEXT_PUBLIC_VLAYER_API_TOKEN,
+                }}
+              >
+                <TwitterVerification />
+              </ProofProvider>
+            )}
 
             {/* {activeTab === "my-contests" && <MyContest />} */}
           </motion.div>
