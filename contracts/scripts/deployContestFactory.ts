@@ -59,7 +59,6 @@ async function main() {
   } catch (err) {
     console.error("❌ MyToken verification failed:", err);
   }
-
   try {
     await run("verify:verify", {
       address: await factory.getAddress(),
@@ -80,6 +79,8 @@ async function main() {
   const deployedInfo = {
     contestFactory: await factory.getAddress(),
     myToken: await myToken.getAddress(),
+    twitterProver: await twitterProver.getAddress(),
+    twitterAccountVerifier: await twitterAccountVerifier.getAddress()
   };
 
   fs.writeFileSync("./deployed.json", JSON.stringify(deployedInfo, null, 2));

@@ -81,7 +81,7 @@ async function main() {
   const fee = await Contest.getEntropyFee(entropyProvider);
   console.log("pythFee:", fee.toString());
 
-  const endTx = await Contest.requestRandomNumber(dummyEntropy, { value: fee });
+  const endTx = await Contest.endContest(dummyEntropy, { value: fee });
   await endTx.wait();
 
   console.log("Contest ended, waiting for winner...");

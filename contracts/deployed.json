@@ -1,4 +1,6 @@
 {
-  "contestFactory": "0xd1b829D6Ac8d63354ee1e32Be7b508B64a2a5A9a",
-  "myToken": "0x977A61Df731A8e7Ae0074E84D5d1804000080518"
+  "contestFactory": "0x124d572B215eA8156f395Cb2BD3bf9c617e2a998",
+  "myToken": "0xdFdcCD9329eB4C9AdB264BAEF9D5217089C91a67",
+  "twitterProver": "0x9d229a7a0D00F5813fEfF89eCeFF5Ff43FE46d91",
+  "twitterAccountVerifier": "0x7569C9568ff5b7ed6aeec9A7d8f5C5049f569E75"
 }
