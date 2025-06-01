@@ -34,7 +34,7 @@ forge script \
   scripts/ContestFactory.s.sol:ContestFactoryScript \
   --verify \
   --verifier blockscout \
-  --verifier-url https://https://optimism-sepolia.blockscout.com/api/ \
+  --verifier-url https://optimism-sepolia.blockscout.com/api/ \
   --broadcast
 ```
 
